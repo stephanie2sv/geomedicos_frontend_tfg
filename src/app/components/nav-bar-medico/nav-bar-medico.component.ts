@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-nav-bar-general',
+  selector: 'app-nav-bar-medico',
   standalone: true,
   imports: [RouterModule],
-  templateUrl: './nav-bar-general.component.html',
-  styleUrl: './nav-bar-general.component.css'
+  templateUrl: './nav-bar-medico.component.html',
+  styleUrl: './nav-bar-medico.component.css'
 })
-export class NavBarGeneralComponent {
+export class NavBarMedicoComponent {
   constructor(public authService: AuthService) {}
 }

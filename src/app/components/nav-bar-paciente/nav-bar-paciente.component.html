@@ -1,1 +1,24 @@
-<p>nav-bar-paciente works!</p>
+@if (authService.isPaciente()) {
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" routerLink="/patient/dashboard">Área Paciente</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#patientNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="patientNavbar">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/patient/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/patient/appointments">Mis Citas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/patient/profile">Perfil</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  }
