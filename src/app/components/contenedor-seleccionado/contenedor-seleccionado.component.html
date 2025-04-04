@@ -1,0 +1,21 @@
+@switch(componente){
+    @case('calendario'){
+        <app-calendario></app-calendario>
+    }
+    @case('citas'){
+        <div class="row justify-content-center">
+            <div class="row row-cols-1 row-cols-md-2 g-3 justify-content-evenly">
+                @for (cita of citas; track cita.idCita) {
+                <app-citas [cita]="cita"></app-citas>
+                }
+            </div>
+        </div>
+    }
+    @case('agenda'){
+        <p>Seleccionado agenda</p>
+        <app-agenda></app-agenda>
+    }
+    @case('clinicas'){
+        <p>Seleccionado clinicas</p>
+    }
+}

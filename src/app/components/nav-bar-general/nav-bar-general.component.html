@@ -1,28 +1,31 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" routerLink="/">GeoMedicos</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#generalNavbar">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="generalNavbar">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/">Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/doctors">Médicos</a>
-          </li>
-        </ul>
+<mat-toolbar color="primary">
+  <span>GeoMedicos</span>
+  <span class="spacer"></span>
 
-        <div class="d-flex">
-          @if (!authService.currentUser$) {
-            <div class="btn-group">
-              <a routerLink="/login" class="btn btn-outline-primary me-2">Iniciar Sesión</a>
-              <a routerLink="/register" class="btn btn-primary">Registrarse</a>
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  </nav>
+  <!-- Links de navegación -->
+  <button mat-button routerLink="/">Inicio</button>
+  <button mat-button routerLink="/doctors">Médicos</button>
+
+  <span class="spacer"></span>
+
+
+  @if (!authService.currentUser$) {
+    <button mat-button color="accent" routerLink="/login">Iniciar Sesión</button>
+    <button mat-raised-button color="accent" routerLink="/register">Registrarse</button>
+  }
+
+  @else {
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item [routerLink]="(authService.currentUser$ | async)?.role === 'DOCTOR' ? '/profile/doctor' : '/profile/user'">
+        <mat-icon>person</mat-icon> Área Personal
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon> Cerrar Sesión
+      </button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon> Mi Cuenta
+    </button>
+  }
+</mat-toolbar>

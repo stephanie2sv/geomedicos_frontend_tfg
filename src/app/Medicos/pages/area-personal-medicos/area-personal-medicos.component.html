@@ -1,1 +1,18 @@
-<p>area-personal-medicos works!</p>
+<div class="container-fluid">
+<app-barra-herramientas
+(componenteSeleccionado)="actualizarComponente($event)"
+(mostrarDatos)="toggleDatosDesplegable()"
+></app-barra-herramientas>
+    <div class="row">
+        @if(mostrarDatos){
+        <div class="col-md-3 col-sm-12">
+        <app-datos-desplegable></app-datos-desplegable>
+        </div>
+        }
+        <div [ngClass]="{'col-md-9':mostrarDatos, 'col-md-12':!mostrarDatos}" class="col-sm-12">
+            <div class="card shadow p-4">
+                <app-contenedor-seleccionado [componente]="componenteActual"></app-contenedor-seleccionado>
+            </div>
+        </div>
+    </div>
+</div>
