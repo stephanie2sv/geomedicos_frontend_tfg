@@ -1,10 +1,13 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CalendarioComponent } from '../calendario/calendario.component';
-import { CitasComponent } from "../cardCitas/citas.component";
-import { Cita } from '../../interfaces/cita';
-import { CitasService } from '../../services/citas.service';
-import { AgendaComponent } from '../agenda/agenda.component';
+
+
+import { CitasService } from '../../services/citas-service.service';
+;
 import { MatCard } from '@angular/material/card';
+import { Icita } from '../../interfaces/icita';
+import { CitasComponent } from '../card-citas/card-citas.component';
+import { AgendaComponent } from '../agenda/agenda.component';
 
 @Component({
   selector: 'app-contenedor-seleccionado',
@@ -15,7 +18,7 @@ import { MatCard } from '@angular/material/card';
 })
 export class ContenedorSeleccionadoComponent implements OnInit, OnChanges {
 @Input() componente:string='';
-@Input() citas: Cita[]=[];
+@Input() citas: Icita[]=[];
 
 constructor(private citasService:CitasService){
   console.log('ContenedorSeleccionado ha sido creado')
@@ -35,7 +38,7 @@ ngOnChanges(changes: SimpleChanges) {
 
 
 cargarCitas(){
-  this.citasService.getCitas().subscribe(
+  this.citasService.getAllCitas().subscribe(
     (data)=>{
       this.citas=data;
     }

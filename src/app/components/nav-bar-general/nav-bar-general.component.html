@@ -1,31 +1,47 @@
-<mat-toolbar color="primary">
-  <span>GeoMedicos</span>
-  <span class="spacer"></span>
-
-  <!-- Links de navegación -->
-  <button mat-button routerLink="/">Inicio</button>
-  <button mat-button routerLink="/doctors">Médicos</button>
-
-  <span class="spacer"></span>
-
-
-  @if (!authService.currentUser$) {
-    <button mat-button color="accent" routerLink="/login">Iniciar Sesión</button>
-    <button mat-raised-button color="accent" routerLink="/register">Registrarse</button>
-  }
-
-  @else {
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item [routerLink]="(authService.currentUser$ | async)?.role === 'DOCTOR' ? '/profile/doctor' : '/profile/user'">
-        <mat-icon>person</mat-icon> Área Personal
-      </button>
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>logout</mat-icon> Cerrar Sesión
-      </button>
-    </mat-menu>
-
-    <button mat-button [matMenuTriggerFor]="userMenu">
-      <mat-icon>account_circle</mat-icon> Mi Cuenta
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">
+      <img src="assets/images/GeoMedicos.svg" alt="GeoMedicos" height="40">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#generalNavbar">
+      <span class="navbar-toggler-icon"></span>
     </button>
-  }
-</mat-toolbar>
+    
+    <div class="collapse navbar-collapse" id="generalNavbar">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/clinicas">Clinicas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/especialidades">Especialidades</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/enfermedades">Enfermedades</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dentistas">Dentistas</a>
+        </li>
+      </ul>
+
+      <div class="d-flex">
+        <a routerLink="/area-profesionales" class="btn btn-outline-primary me-2">Área para profesionales</a>
+        <a routerLink="/pide-cita" class="btn btn-primary me-2">Pide una cita</a>
+        @if (!(authService.currentUser$ | async)) {
+          <a routerLink="/login" class="btn btn-outline-secondary">Iniciar sesión</a>
+        } @else {
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary" id="userMenu" ngbDropdownToggle>
+              Mi cuenta
+            </button>
+            <div ngbDropdownMenu aria-labelledby="userMenu">
+              <a ngbDropdownItem routerLink="/perfil">Mi perfil</a>
+              <a ngbDropdownItem routerLink="/mis-citas">Mis citas</a>
+              <div class="dropdown-divider"></div>
+              <a ngbDropdownItem (click)="authService.logout()">Cerrar sesión</a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</nav>

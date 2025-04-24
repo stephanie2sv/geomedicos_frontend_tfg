@@ -1,29 +1,22 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, GuardResult, MaybeAsync, Router, RouterStateSnapshot } from "@angular/router";
-import { AuthService } from '../services/auth.service';
+import { inject, Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot, CanActivate, CanActivateFn, GuardResult, MaybeAsync, Router, RouterStateSnapshot } from "@angular/router";
+import { AuthService } from "../services/auth.service";
 
 
+export const roleGuard: CanActivateFn = (route) => {
 
-@Injectable({
-    providedIn: 'root'
-  })
-export class RoleGuard  implements CanActivate{
+    const authService = inject(AuthService); 
+    const router = inject(Router);
 
-    constructor(
-        private authService: AuthService,
-        private router: Router
-    ) {}
+    const expectedRole = route.data['expectedRole'];
+    const userRole = authService.getRole();
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        const requiredRoles = route.data['roles'] as string[];
-
-        if (this.authService.canActivate(requiredRoles)){
-            return true;
-        }
-
-        //Redirigir a pagina de login o acceso denegado
-        this.router.navigate(['/login'])
-        return false;
-
-    }
+    if(userRole === expectedRole) {
+        return true;
+    } 
+    
+    router.navigate(['/page404']); //redirige a pagina no encontrada
+    return false;
 }
+
+

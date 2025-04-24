@@ -16,6 +16,7 @@ import { IUser } from '../../interfaces/iuser';
   styleUrl: './area-personal-general.component.css'
 })
 export class AreaPersonalGeneralComponent implements OnInit{
+  
   role:string;
   componenteActual:string;
   mostrarDatos:boolean;
@@ -44,8 +45,9 @@ export class AreaPersonalGeneralComponent implements OnInit{
   actualizarComponente(componente:string){
     this.componenteActual=componente;
   }
-  
+
   toggleDatosDesplegable(){
     this.mostrarDatos=!this.mostrarDatos;
   }
 }
+

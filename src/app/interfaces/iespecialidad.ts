@@ -1,4 +1,4 @@
-export interface Iespecialidad {
-    idEspecialidad:number,
-    nombre:string
+export interface IEspecialidad {
+    idEspecialidad: number;
+    nombre: string;
 }

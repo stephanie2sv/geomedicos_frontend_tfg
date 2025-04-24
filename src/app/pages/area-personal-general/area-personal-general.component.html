@@ -1,18 +1,19 @@
-<div class="container-fluid">
-    <app-barra-herramientas
-    (componenteSeleccionado)="actualizarComponente($event)"
-    (mostrarDatos)="toggleDatosDesplegable()"
-    ></app-barra-herramientas>
-        <div class="row">
-            @if(mostrarDatos){
-            <div class="col-md-3 col-sm-12">
-                    <app-datos-desplegable [persona]="persona"></app-datos-desplegable>    
-            </div>
-        }
-            <div [ngClass]="{'col-md-9':mostrarDatos, 'col-md-12':!mostrarDatos}" class="col-sm-12">
-                <div class="card shadow p-4">
-                    <app-contenedor-seleccionado [componente]="componenteActual"></app-contenedor-seleccionado>
-                </div>
-            </div>
+<mat-card class="personal-data-card">
+    <mat-card-header class="bg-info text-white d-flex align-items-center">
+        <mat-icon class="me-2">person</mat-icon>
+        <div>
+            <span class="text-white-50">Datos Personales</span>
+            <mat-card-subtitle><span class="text-white">Nombre: </span>{{persona?.nombre + ' ' + persona?.apellidos}}</mat-card-subtitle>
         </div>
- 
+    </mat-card-header>
+    <mat-card-content>
+        <p><span class="text-body-emphasis">Correo: </span>{{persona?.correo}}</p>
+        <p><span class="text-body-emphasis">Role: </span>{{persona?.role}}</p>
+        <p><span class="text-body-emphasis">ID: </span>{{persona?.id_usuario}}</p>
+        @if(isMedico(persona)){
+            <p><span class="text-body-emphasis">Especialidad: </span> {{persona.especialidad}}</p>
+            <p><span class="text-body-emphasis">Tratamientos: </span> {{persona.tratamientos}}</p>
+        }
+
+    </mat-card-content>
+</mat-card>

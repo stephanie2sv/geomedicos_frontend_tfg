@@ -4,29 +4,35 @@ import { Observable, of } from 'rxjs';
 import { IMedico } from '../interfaces/imedico';
 import { IUser } from '../interfaces/iuser';
 import { IAdmin } from './../interfaces/iadmin';
-import { MockApiService } from './mock-api.service';
+import { environment } from './environment.prod';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatosPersonalesService {
  
-private mockApi:MockApiService;
+  private apiUrl = `${environment.apiUrl}/usuarios`;
 
-constructor(mockApi: MockApiService) {
-  this.mockApi = mockApi;  
-}
+  constructor(private http: HttpClient) { }
 
-  getDatosPersonalesUser(correo: string) : Observable<IUser>{
-    const user = this.mockApi.getUserByEmail(correo);
-    return of(user);
+  getDatosPersonalesByEmail(correo: string): Observable<IUser> {
+    return this.http.get<IUser>(`${this.apiUrl}/detalle?correo=${correo}`);
   }
 
-  getDatosPersonalesDoctor(correo:string) : Observable<IMedico>{
-    const doctor=this.mockApi.getDoctorByEmail(correo);
-    return of(doctor);
+  getDatosMedicoByEmail(correo: string): Observable<IMedico> {
+    return this.http.get<IMedico>(`${this.apiUrl}/medico?correo=${correo}`);
   }
 
- 
+  actualizarDatosPersonales(usuario: IUser): Observable<IUser> {
+    return this.http.put<IUser>(`${this.apiUrl}/actualizar`, usuario);
+  }
+  
+  // Si necesitas añadir un nuevo usuario
+  registrarUsuario(usuario: IUser): Observable<IUser> {
+    return this.http.post<IUser>(`${this.apiUrl}/registrar`, usuario);
+  }
+
+
 
 }

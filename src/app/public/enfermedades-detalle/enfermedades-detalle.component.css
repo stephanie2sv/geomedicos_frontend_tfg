@@ -1,0 +1,21 @@
+.modal-backdrop {
+    opacity: 0.5;
+}
+
+.modal-header {
+    border-bottom: 2px solid #f8f9fa;
+}
+
+.modal-footer {
+    border-top: 2px solid #f8f9fa;
+}
+
+.modal {
+    position: fixed;
+    z-index: 1050;
+    pointer-events: none;
+  }
+  
+  .modal-dialog {
+    pointer-events: auto;
+  }

@@ -1,0 +1,35 @@
+<div class="modal fade show" tabindex="-1" style="display: block;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ enfermedad.nombre }}</h5>
+          <button type="button" class="btn-close" (click)="onCerrar()"></button>
+        </div>
+        <div class="modal-body">
+          @if (enfermedad.nombreEspecialidad) {
+            <div class="mb-3">
+              <span class="badge bg-info">{{ enfermedad.nombreEspecialidad }}</span>
+            </div>
+          }
+          
+          @if (enfermedad.nombreTratamiento) {
+            <div class="mb-3">
+              <h6>Tratamiento: {{ enfermedad.nombreTratamiento }}</h6>
+            </div>
+          }
+          
+          @if (enfermedad.descripcionTratamiento) {
+            <div class="mb-3">
+              <h6>Descripción del tratamiento:</h6>
+              <p>{{ enfermedad.descripcionTratamiento }}</p>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onCerrar()">Cerrar</button>
+          <button type="button" class="btn btn-primary" (click)="onBuscarDoctores()">Buscar médicos</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+  </div>

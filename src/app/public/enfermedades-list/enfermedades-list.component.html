@@ -1,0 +1,94 @@
+<div class="container mt-4">
+    <h2 class="mb-4">Listado de enfermedades</h2>
+
+    <!--Filtros-->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar por enfermedad..." 
+                       [(ngModel)]="terminoBusqueda" 
+                       (input)="onSearchChange()"
+                       list="sugerencias">
+                <datalist id="sugerencias">
+                    @for (sugerencia of sugerenciasBusqueda; track sugerencia) {
+                        <option [value]="sugerencia"></option>
+                    }
+                </datalist>
+                <button class="btn btn-primary" type="button" (click)="buscarEnfermedades()">Buscar</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <select class="form-select" [(ngModel)]="especialidadSeleccionada" (change)="filtrarPorEspecialidad()">
+                <option [value]="0">Todas las especialidades</option>
+                @for (especialidad of especialidades; track especialidad.idEspecialidad) {
+                    <option [value]="especialidad.idEspecialidad">
+                        {{ especialidad.nombre }}
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <!-- Estado de carga y errores -->
+    @if (cargando) {
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    } @else if (error) {
+        <div class="alert alert-danger">{{ error }}</div>
+    } @else if (enfermedadesFiltradas.length === 0) {
+        <div class="alert alert-info">No se encontraron enfermedades que coincidan con su búsqueda.</div>
+    } @else {
+        <!-- Lista de enfermedades -->
+        <div class="row">
+            @for (enfermedad of enfermedadesPaginadas; track enfermedad.idEnfermedad) {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ enfermedad.nombre }}</h5>
+                            @if (enfermedad.descripcionTratamiento) {
+                                <p class="card-text">{{ enfermedad.descripcionTratamiento }}</p>
+                            }
+                            @if (enfermedad.nombreEspecialidad) {
+                                <span class="badge bg-info mb-2">{{ enfermedad.nombreEspecialidad }}</span>
+                            }
+                            <div class="mt-2">
+                                <button class="btn btn-outline-primary" (click)="verDetalle(enfermedad)">Ver detalles</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Paginación -->
+        @if (enfermedadesFiltradas.length > elementosPorPagina) {
+            <nav aria-label="Navegación de páginas">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" [class.disabled]="paginaActual === 1">
+                        <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</a>
+                    </li>
+                    @for (pagina of numeroPaginas; track pagina) {
+                        <li class="page-item" [class.active]="pagina === paginaActual">
+                            <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+                        </li>
+                    }
+                    <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                        <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+
+    <!-- Componente Modal -->
+    @if (enfermedadSeleccionada) {
+        <app-enfermedades-detalle 
+            [enfermedad]="enfermedadSeleccionada"
+            (cerrar)="cerrarDetalle()"
+            (buscarDoctores)="buscarDoctoresPorEnfermedad($event)">
+        </app-enfermedades-detalle>
+    }
+</div>

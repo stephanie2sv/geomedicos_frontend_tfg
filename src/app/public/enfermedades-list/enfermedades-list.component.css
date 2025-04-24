@@ -1,0 +1,27 @@
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.modal-backdrop {
+    opacity: 0.5;
+}
+
+.alert {
+    border-radius: 5px;
+}
+
+  /* Asegurarse que todas las cards tengan la misma altura */
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body button {
+    margin-top: auto;
+}
