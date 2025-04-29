@@ -2,7 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { IMedico } from '../interfaces/imedico';
-import { IUser } from '../interfaces/iuser';
+import { IUser } from '../auth/interfaces/iuser';
 import { IAdmin } from './../interfaces/iadmin';
 import { environment } from './environment.prod';
 

@@ -1,0 +1,31 @@
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             [value]="termino"
+             (input)="onInput($event)"
+             list="sugerencias"
+             placeholder="Buscar enfermedad...">
+               <datalist id="sugerencias">
+                @for (sugerencia of sugerencias; track sugerencia) {
+                    <option [value]="sugerencia"></option>
+                }
+            </datalist>
+        <button class="btn btn-primary" (click)="buscarManual()">Buscar</button>
+      </div>
+    </div>
+  
+    <div class="col-md-4">
+      <select class="form-select" [value]="especialidadId" (change)="cambiarEspecialidad($event)">
+        <option [value]="0">Todas las especialidades</option>
+        @for(especialidad of especialidades; track especialidad.idEspecialidad){
+          <option [value]="especialidad.idEspecialidad">
+            {{ especialidad.nombre }}
+          </option>
+        }
+        
+      </select>
+    </div>
+  </div>
+  

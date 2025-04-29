@@ -8,11 +8,16 @@ import { EnfermedadesDetalleComponent } from '../enfermedades-detalle/enfermedad
 import { IEspecialidad } from '../../interfaces/iespecialidad';
 import { debounce, debounceTime, distinct, distinctUntilChanged, Subject } from 'rxjs';
 import { EspecialidadesService } from '../../services/especialidades.service';
+import { EnfermedadFiltrosComponent } from "../../components/enfermedades/enfermedad-filtros/enfermedad-filtros.component";
+import { CargandoSpinnerComponent } from "../../components/shared/cargando-spinner/cargando-spinner.component";
+import { EnfermedadCardComponent } from "../../components/enfermedades/enfermedad-card/enfermedad-card.component";
+import { EnfermedadPaginacionComponent } from "../../components/enfermedades/enfermedad-paginacion/enfermedad-paginacion.component";
+import { EnfermedadEncabezadoComponent } from "../../components/enfermedades/enfermedad-encabezado/enfermedad-encabezado.component";
 
 @Component({
   selector: 'app-enfermedades-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, EnfermedadesDetalleComponent],
+  imports: [CommonModule, FormsModule, RouterModule, EnfermedadesDetalleComponent, EnfermedadFiltrosComponent, CargandoSpinnerComponent, EnfermedadCardComponent, EnfermedadPaginacionComponent, EnfermedadEncabezadoComponent],
   templateUrl: './enfermedades-list.component.html',
   styleUrl: './enfermedades-list.component.css'
 })
@@ -46,7 +51,6 @@ constructor (private eservice: EnfermedadesService, private espeservice: Especia
 ngOnInit(): void {
   this.cargarDatos();
 
-//Configurar el debounce para la busqueda
 this.searchTerms.pipe(
   debounceTime(300),
   distinctUntilChanged()
@@ -58,7 +62,6 @@ this.searchTerms.pipe(
 cargarDatos(): void {
   this.cargando = true;
 
-  //Cargar especialidades
   this.espeservice.getEspecialidades().subscribe({
     next: (data) => {
       this.especialidades = data;
@@ -84,12 +87,12 @@ cargarDatos(): void {
   });
 }
 
-//Metodo de buscar y filtrado
+
 onSearchChange(): void {
   this.searchTerms.next(this.terminoBusqueda);
 }
 
-//metodos
+
 buscarEnfermedades(): void {
   this.cargando = true;
   this.paginaActual = 1;
@@ -109,7 +112,7 @@ buscarEnfermedades(): void {
       }
     });
   } else if (this.terminoBusqueda.trim() !== '' && this.especialidadSeleccionada === 0) {
-    //Solo filtrar por termino de búsqueda
+   
     this.eservice.buscarEnfermedades(this.terminoBusqueda).subscribe({
       next: (data) => {
         this.enfermedadesFiltradas = data;
@@ -123,7 +126,7 @@ buscarEnfermedades(): void {
       }
     });
   } else if (this.terminoBusqueda.trim() === '' && this.especialidadSeleccionada !== 0) {
-    //Solo filtrar por especialidad
+    
     this.eservice.getEnfermedadesPorEspecialidad(this.especialidadSeleccionada).subscribe({
       next: (data) => {
         this.enfermedadesFiltradas = data;
@@ -137,7 +140,7 @@ buscarEnfermedades(): void {
       }
     });
   } else {
-    //filtrar por termino y especialidad (hacemos la búsqueda por termino y luego filtramos por especialidad en el cliente )
+    
     this.eservice.buscarEnfermedades(this.terminoBusqueda).subscribe({
       next: (data) => {
         this.enfermedadesFiltradas = data.filter(e => e.idEspecialidad === this.especialidadSeleccionada);
@@ -166,10 +169,21 @@ prepararSugerencias(): void {
 }
 
 //Metodosx de paginacion
-actualizarPaginacion(): void{
+actualizarPaginacion(): void {
+  console.log('Filtradas:', this.enfermedadesFiltradas.length);
+console.log('Elementos por página:', this.elementosPorPagina);
   this.totalPaginas = Math.ceil(this.enfermedadesFiltradas.length / this.elementosPorPagina);
-  this.numeroPaginas = Array.from({length: this.totalPaginas}, (_, i) => i + 1);
-  this.cambiarPagina(1);
+  this.numeroPaginas = Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
+
+  // Mantén la página actual si está dentro del nuevo rango
+  if (this.paginaActual > this.totalPaginas) {
+    this.paginaActual = this.totalPaginas;
+  }
+  if (this.paginaActual < 1) {
+    this.paginaActual = 1;
+  }
+
+  this.cambiarPagina(this.paginaActual);
 }
 
 cambiarPagina(pagina: number): void{
@@ -197,6 +211,16 @@ buscarDoctoresPorEnfermedad(enfermedad: IEnfermedad): void {
   //Esta funcion se terminara de implementer cuando ser termine el back
   console.log('Buscando doctores para: ', enfermedad.nombre);
   //aqui se podria navegar a otra ruta o mostrar otrto componente
+}
+
+actualizarTermino(nuevoTermino: string): void {
+  this.terminoBusqueda = nuevoTermino;
+  this.buscarEnfermedades();
+}
+
+actualizarEspecialidad(id: number): void {
+  this.especialidadSeleccionada = id;
+  this.buscarEnfermedades(); // Filtra apenas cambia la especialidad
 }
 
 

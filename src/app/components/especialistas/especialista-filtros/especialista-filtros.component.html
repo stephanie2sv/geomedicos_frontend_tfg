@@ -1,0 +1,25 @@
+<div class="row mb-4">
+    <div class="col-md-8">
+      <div class="input-group">
+        <input type="text"
+               class="form-control shadow-sm"
+               placeholder="Buscar por nombre del médico..."
+               [(ngModel)]="termino"
+               (keyup.enter)="emitirBusqueda()" />
+        <button class="btn btn-primary" type="button" (click)="emitirBusqueda()">
+          <i class="fas fa-search"></i> Buscar
+        </button>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <select class="form-select" [(ngModel)]="orden" (change)="onOrdenar.emit()">
+        <option value="nombre">Ordenar por nombre</option>
+        <option value="tarifa_asc">Precio: de menor a mayor</option>
+        <option value="tarifa_desc">Precio: de mayor a menor</option>
+        <option value="valoracion">Mejor valorados</option>
+      </select>
+    </div>
+  </div>
+
+ 
+  

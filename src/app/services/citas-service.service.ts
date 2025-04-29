@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { forkJoin, map, Observable, switchMap } from 'rxjs';
-import { Icita } from '../interfaces/icita';
 import { environment } from './environment.prod';
 import { IEnfermedad } from '../interfaces/ienfermedad';
+import { Cita } from '../interfaces/cita';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +14,13 @@ export class CitasService {
 
   constructor(private  http : HttpClient){}
 
-  getCitasPorId(idCitas: number):Observable<Icita[]>{
+  getCitasPorId(idCitas: number):Observable<Cita[]>{
     console.log('llamando a getCitasPorId()...');
-    return this.http.get<Icita[]>(`${this.apiUrl}/citas/${idCitas}`)
+    return this.http.get<Cita[]>(`${this.apiUrl}/citas/${idCitas}`)
   }
 
-  getAllCitas(): Observable<Icita[]> {
-    return this.http.get<Icita[]>(`${this.apiUrl}/citas`)
+  getAllCitas(): Observable<Cita[]> {
+    return this.http.get<Cita[]>(`${this.apiUrl}/citas`)
   }
 
 }

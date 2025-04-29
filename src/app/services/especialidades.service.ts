@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { IEspecialidad } from '../interfaces/iespecialidad';
 import { environment } from './environment.prod';
 
@@ -8,7 +8,7 @@ import { environment } from './environment.prod';
   providedIn: 'root'
 })
 export class EspecialidadesService {
-  private apiUrl = `${environment.apiUrl}/especialidad`;
+  private apiUrl = `${environment.apiUrl}/especialidades`;
   
   constructor(private http : HttpClient) { }
 
@@ -17,7 +17,8 @@ export class EspecialidadesService {
   }
 
   getEspecialidadPorId(id: number): Observable<IEspecialidad> {
-    return this.http.get<IEspecialidad>(`${this.apiUrl}/detalle/${id}`);
+    return this.http.get<IEspecialidad>(`${this.apiUrl}/${id}`);
   }
+ 
 
 }

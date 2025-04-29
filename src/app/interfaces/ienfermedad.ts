@@ -9,11 +9,3 @@ export interface IEnfermedad {
     nombreEspecialidad?: string;
 }
 
-
-// export interface IEnfermedad {
-//     id: number;
-//     nombre: string;
-//     descripcion: string;
-//     sintomas: string[];
-//     especialidadId: number;
-// }

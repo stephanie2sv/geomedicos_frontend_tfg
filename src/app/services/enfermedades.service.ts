@@ -9,27 +9,27 @@ import { environment } from './environment.prod';
 })
 export class EnfermedadesService {
 
-  private apiUrl = `${environment.apiUrl}/enfermedad`
+  private apiUrl = `${environment.apiUrl}/enfermedades`
 
   constructor(private http: HttpClient) { }
 
 
   getEnfermedades(): Observable<IEnfermedad[]> {
-    return this.http.get<IEnfermedad[]>(`${this.apiUrl}/todas`); //cambiar a api cuando este 
+    return this.http.get<IEnfermedad[]>(`${this.apiUrl}/todas`);
   }
+
 
   getEnfermedadPorId(id: number): Observable<IEnfermedad> {
-    return this.http.get<IEnfermedad>(`${this.apiUrl}/detalle/${id}`);
+    return this.http.get<IEnfermedad>(`${this.apiUrl}/una/${id}`);
   }
+
 
   buscarEnfermedades(termino: string): Observable<IEnfermedad[]> {
-    return this.http.get<IEnfermedad[]>(`${this.apiUrl}/buscar?termino=${termino}`);
+    return this.http.get<IEnfermedad[]>(`${this.apiUrl}/nombre/${termino}`);
   }
 
-  // metodo para obtener enfermedades por especialidad
   getEnfermedadesPorEspecialidad(idEspecialidad: number): Observable<IEnfermedad[]> {
     return this.http.get<IEnfermedad[]>(`${this.apiUrl}/especialidad/${idEspecialidad}`);
   }
-
 
 }

@@ -1,0 +1,13 @@
+<div class="row">
+    @for(clinica of clinicas; track clinica.idClinica) {
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="card-title text-primary fw-semibold">{{ clinica.nombre }}</h5>
+            <p class="badge bg-info mb-2">{{ clinica.direccion }}</p>
+            <p class="text-muted small">Ciudad: {{ clinica.ciudad }}</p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>

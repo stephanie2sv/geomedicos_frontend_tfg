@@ -8,34 +8,45 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { EspecialistaDetalleComponent } from '../especialista-detalle/especialista-detalle.component';
 import { MedicosService } from '../../services/medicos.service';
+import { normalizarTexto } from '../../utils/text-utils';
+import { EspecialistaEncabezadoComponent } from "../../components/especialistas/especialista-encabezado/especialista-encabezado.component";
+import { EspecialistaFiltrosComponent } from "../../components/especialistas/especialista-filtros/especialista-filtros.component";
+import { CargandoSpinnerComponent } from "../../components/shared/cargando-spinner/cargando-spinner.component";
+import { EspecialistaListadoMedicosComponent } from '../../components/especialistas/especialista-listado-medicos/especialista-listado-medicos.component';
+import { EspecialistaPaginacionComponent } from '../../components/especialistas/especialista-paginacion/especialista-paginacion.component';
 
 @Component({
   selector: 'app-especialista-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, EspecialistaDetalleComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    EspecialistaDetalleComponent,
+    EspecialistaEncabezadoComponent,
+    EspecialistaFiltrosComponent,
+    CargandoSpinnerComponent,
+    EspecialistaListadoMedicosComponent,
+    EspecialistaPaginacionComponent
+  ],
   templateUrl: './especialista-list.component.html',
-  styleUrl: './especialista-list.component.css'
+  styleUrls: ['./especialista-list.component.css']
 })
 export class EspecialistaListComponent implements OnInit {
-
-  //Datos Principales
   medicos: IMedico[] = [];
   medicosFiltrados: IMedico[] = [];
   medicosPaginados: IMedico[] = [];
   especialidad: IEspecialidad | null = null;
   idEspecialidad: number = 0;
 
-  //filtros
   terminoBusqueda: string = '';
   ordenSeleccionado: string = 'nombre';
 
-  //paginacion
   paginaActual: number = 1;
   elementosPorPagina: number = 6;
   totalPaginas: number = 0;
   numeroPaginas: number[] = [];
 
-  //estado del componente
   medicoSeleccionado: IMedico | null = null;
   cargando: boolean = true;
   error: string | null = null;
@@ -48,50 +59,86 @@ export class EspecialistaListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-      //obtener el ID de especialidad de la URL
-      this.route.params.subscribe(params => {
-        this.idEspecialidad = +params['id'] || 0;
-        this.cargarDatos();
-      });
+    this.route.params.subscribe(params => {
+      this.idEspecialidad = +params['id'] || 0;
+      this.cargarDatos();
+      
+    });
   }
 
   cargarDatos(): void {
     this.cargando = true;
 
-    //cargar datos de la especialidad
     if (this.idEspecialidad > 0) {
       this.espeService.getEspecialidadPorId(this.idEspecialidad).subscribe({
         next: (data) => {
           this.especialidad = data;
         },
-        error: (err) => {
-          console.error('Error obteniendo especialidad', err);
-          this.error = 'No se pudo cargar la informacion de la especialidad';
+        error: () => {
+          this.error = 'No se pudo cargar la información de la especialidad';
         }
       });
 
-     //cargar medicos por especialidad
       this.mService.getMedicosPorEspecialidad(this.idEspecialidad).subscribe({
         next: (data) => {
           this.medicos = data;
-          this.medicosFiltrados = data;
+          this.medicosFiltrados = [...data];
           this.aplicarFiltros();
           this.actualizarPaginacion();
           this.cargando = false;
         },
-        error: (err) => {
-          this.error = 'Error al cargar los medicos. Intente neuvamente mas tarde.';
+        error: () => {
+          this.error = 'Error al cargar los médicos';
           this.cargando = false;
-          console.error('Error obteniendo medicos', err);
         }
       });
+      console.log('Médicos recibidos:', this.medicos);
     } else {
-      this.error = 'Especialidad no especificada';
-      this.cargando = false;
+      this.espeService.getEspecialidades().subscribe({
+        next: (especialidades) => {
+          this.medicos = [];
+          let pendientes = especialidades.length;
+
+          if (pendientes === 0) {
+            this.medicosFiltrados = [];
+            this.actualizarPaginacion();
+            this.cargando = false;
+            return;
+          }
+
+          especialidades.forEach((esp) => {
+            this.mService.getMedicosPorEspecialidad(esp.idEspecialidad).subscribe({
+              next: (medicosPorEsp) => {
+                const medicosConEspecialidad = medicosPorEsp.map((medico) => ({
+                  ...medico,
+                  especialidades: [esp]
+                }));
+
+                this.medicos.push(...medicosConEspecialidad);
+                pendientes--;
+
+                if (pendientes === 0) {
+                  this.medicosFiltrados = [...this.medicos];
+                  this.aplicarFiltros();
+                  this.actualizarPaginacion();
+                  this.cargando = false;
+                }
+              },
+              error: () => {
+                this.error = `Error al cargar médicos de ${esp.nombre}`;
+                this.cargando = false;
+              }
+            });
+          });
+        },
+        error: () => {
+          this.error = 'No se pudieron cargar las especialidades desde el servidor';
+          this.cargando = false;
+        }
+      });
     }
   }
 
-  //metodos de busqueda y filtrado
   buscarMedicos(): void {
     this.aplicarFiltros();
   }
@@ -100,57 +147,63 @@ export class EspecialistaListComponent implements OnInit {
     this.cargando = true;
     this.paginaActual = 1;
 
-    //Filtrar por termino de busqueda si existe
-    if ( this.terminoBusqueda.trim() !== '') {
+    const termino = normalizarTexto(this.terminoBusqueda.trim());
+
+    if (termino !== '') {
       this.medicosFiltrados = this.medicos.filter(medico =>
-        medico.nombre.toLowerCase().includes(this.terminoBusqueda.toLowerCase()) ||
-        (medico.apellidos && medico.apellidos.toLowerCase().includes(this.terminoBusqueda.toLowerCase()))
+        normalizarTexto(medico.nombre).includes(termino) ||
+        normalizarTexto(medico.apellidos).includes(termino) ||
+        (medico.especialidades &&
+          medico.especialidades.some((especialidad: any) =>
+            typeof especialidad === 'string'
+              ? normalizarTexto(especialidad).includes(termino)
+              : normalizarTexto(especialidad.nombre || '').includes(termino)
+          ))
       );
     } else {
       this.medicosFiltrados = [...this.medicos];
+      console.log("aqui los medicos filtrados:",this.medicosFiltrados)
     }
 
-    //Aplicar ordenamiento
     this.ordenarResultados();
-
     this.actualizarPaginacion();
     this.cargando = false;
   }
-
   ordenarResultados(): void {
     switch (this.ordenSeleccionado) {
       case 'nombre':
-        this.medicosFiltrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        this.medicosFiltrados.sort((a, b) => {
+          const nombreA = a?.nombre ?? '';
+          const nombreB = b?.nombre ?? '';
+          return nombreA.localeCompare(nombreB);
+        });
         break;
       case 'tarifa_asc':
-        this.medicosFiltrados.sort((a, b) => a.tarifa - b.tarifa);
+        this.medicosFiltrados.sort((a, b) => (a?.tarifa ?? 0) - (b?.tarifa ?? 0));
         break;
       case 'tarifa_desc':
-          this.medicosFiltrados.sort((a, b) => b.tarifa - a.tarifa);
+        this.medicosFiltrados.sort((a, b) => (b?.tarifa ?? 0) - (a?.tarifa ?? 0));
         break;
       case 'valoracion':
-          this.medicosFiltrados.sort((a, b) => (b.valoracionPromedio || 0) - (a.valoracionPromedio || 0));
-        break;  
+        this.medicosFiltrados.sort((a, b) => (b?.valoracionPromedio ?? 0) - (a?.valoracionPromedio ?? 0));
+        break;
     }
   }
-
-
-  cambiarOrden(): void {
+  
+  cambiarOrden(nuevoOrden: string): void {
+    this.ordenSeleccionado = nuevoOrden;
     this.ordenarResultados();
     this.actualizarPaginacion();
   }
 
-  //metodos de paginacion
   actualizarPaginacion(): void {
     this.totalPaginas = Math.ceil(this.medicosFiltrados.length / this.elementosPorPagina);
-    this.numeroPaginas = Array.from({length: this.totalPaginas}, (_, i) => i + 1); 
+    this.numeroPaginas = Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
     this.cambiarPagina(1);
   }
 
   cambiarPagina(pagina: number): void {
-    if (pagina < 1 || pagina > this.totalPaginas) {
-      return;
-    }
+    if (pagina < 1 || pagina > this.totalPaginas) return;
 
     this.paginaActual = pagina;
     const inicio = (pagina - 1) * this.elementosPorPagina;
@@ -158,7 +211,6 @@ export class EspecialistaListComponent implements OnInit {
     this.medicosPaginados = this.medicosFiltrados.slice(inicio, fin);
   }
 
-  //metodos de detalle
   verDetalle(medico: IMedico): void {
     this.medicoSeleccionado = medico;
   }
@@ -168,9 +220,12 @@ export class EspecialistaListComponent implements OnInit {
   }
 
   solicitarCita(medico: IMedico): void {
-    // Aquí podrías navegar a un componente de citas
     console.log('Solicitando cita con:', medico.nombre);
-    // Por ejemplo: this.router.navigate(['/citas/solicitar', medico.colegiado]);
+    // this.router.navigate(['/citas/solicitar', medico.colegiado]);
   }
 
+  actualizarTermino(nuevoTermino: string): void {
+    this.terminoBusqueda = nuevoTermino || '';
+    this.buscarMedicos();
+  }
 }

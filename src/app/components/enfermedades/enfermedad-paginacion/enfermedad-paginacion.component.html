@@ -1,0 +1,14 @@
+<nav aria-label="Paginación de enfermedades">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="pagina === 1">
+        <a class="page-link" (click)="cambiarPagina(pagina - 1)">Anterior</a>
+      </li>
+      <li class="page-item" *ngFor="let p of paginas" [class.active]="p === pagina">
+        <a class="page-link" (click)="cambiarPagina(p)">{{ p }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="pagina === totalPaginas">
+        <a class="page-link" (click)="cambiarPagina(pagina + 1)">Siguiente</a>
+      </li>
+    </ul>
+  </nav>
+  

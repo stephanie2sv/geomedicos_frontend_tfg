@@ -1,0 +1,9 @@
+<div class="row mb-3">
+    <div class="col-md-8">
+      <input type="text" class="form-control" placeholder="Buscar clínica..."
+             [(ngModel)]="termino" (keyup.enter)="buscar()">
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-50" (click)="buscar()">Buscar</button>
+    </div>
+  </div>

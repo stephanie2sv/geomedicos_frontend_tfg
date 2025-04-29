@@ -1,0 +1,29 @@
+<div class="card-body">
+    <h5 class="card-title mb-1 text-primary">Dr. {{ medico.nombre }} {{ medico.apellidos }}</h5>
+    @if (medico.valoracionPromedio) {
+        <div class="mb-2 text-warning">
+            @for (star of [1,2,3,4,5]; track star) {
+                <i class="fas fa-star" [class.text-warning]="star <= medico.valoracionPromedio" [class.text-muted]="star > medico.valoracionPromedio"></i>
+            }
+            <span class="text-muted ms-2 small">{{ medico.valoracionPromedio }}/5</span>
+        </div>
+    }
+    @if (medico.especialidades && medico.especialidades.length > 0) {
+        <div class="mb-2">
+            @for (especialidad of medico.especialidades; track especialidad.nombre) {
+                <span class="badge bg-info text-dark me-1"> {{ obtenerNombreEspecialidad(especialidad) }}</span>
+            }
+        </div>
+    }
+    <p class="card-text text-muted mb-2">
+        <strong>Tarifa:</strong> {{ medico.tarifa | currency:'EUR':'symbol':'1.2-2' }}
+    </p>
+    <div class="d-flex justify-content-between mt-3">
+        <button class="btn btn-outline-primary btn-sm" (click)="verDetalle.emit(medico)">
+            Ver perfil
+        </button>
+        <button class="btn btn-warning btn-sm" (click)="solicitarCita.emit(medico)">
+            Solicitar cita
+        </button>
+    </div>
+</div>

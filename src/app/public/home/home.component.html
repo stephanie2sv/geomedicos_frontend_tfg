@@ -1,174 +1,64 @@
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8 text-center text-white">
-        
-        <!-- Títulos -->
-        <h1 class="display-5 fw-bold mb-3">Encuentra especialistas médicos de primer nivel</h1>
-        <h2 class="fw-light mb-4 fs-4">Presencial o por telemedicina</h2>
+<div class="container py-1">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 text-center ">
 
-        <!-- Badge seguro -->
-        <div class="badge-seguro mb-5">
-          <i class="fas fa-check-circle me-2"></i>
-          Compatible con tu seguro médico
-        </div>
+      <!-- Títulos -->
+      <h1 class="display-5 fw-bold mb-3">Encuentra especialistas médicos de primer nivel</h1>
+      <h2 class="fw-light mb-4 fs-4">Presencial o por telemedicina</h2>
 
-        <div class="container position-relative" style="margin-top: -40px; margin-bottom: 20px;">
-          <div class="d-flex justify-content-center">
-            <img src="assets/images/GeoMedicosHomePageAzul.svg" 
-                 alt="GeoMedicos" 
-                 height="80px"
-                 style="transform: scale(1.2);"> <!-- Añade escala para mayor impacto -->
-          </div>
-        </div>
-
-        <!-- Buscador central -->
-        <div class="buscador-principal bg-white rounded-4 p-4 shadow-lg">
-          <div class="row g-3 align-items-center">
-            
-            <!-- Campo búsqueda -->
-            <div class="col-md-5">
-              <div class="input-group border-bottom pb-2">
-                <span class="input-group-text bg-transparent border-0">
-                  <i class="fas fa-search text-primary fs-5"></i>
-                </span>
-                <input type="text" 
-                       class="form-control form-control-lg border-0 ps-0" 
-                       placeholder="Especialidad o nombre del médico">
-              </div>
-            </div>
-
-            <!-- Selector localidad -->
-            <div class="col-md-4">
-              <div class="input-group border-bottom pb-2">
-                <span class="input-group-text bg-transparent border-0">
-                  <i class="fas fa-map-marker-alt text-primary fs-5"></i>
-                </span>
-                <select class="form-select form-select-lg border-0 ps-0">
-                  <option>Selecciona provincia</option>
-                  <option>Madrid</option>
-                  <option>Barcelona</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Botón buscar MEJORADO -->
-            <div class="col-md-3">
-              <button class="btn btn-warning btn-lg w-100 py-3 shadow-sm">
-                <i class="fas fa-search me-2" ></i>Buscar ahora
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Especialidades rápidas -->
-        <div class="especialidades-rapidas mt-5">
-          <div class="d-flex flex-wrap gap-3 justify-content-center">
-            <a [routerLink]="['/especialidades', 1]" class="btn btn-outline-primary rounded-pill px-4">Dermatología</a>
-            <a [routerLink]="['/especialidades', 2]" class="btn btn-outline-primary rounded-pill px-4">Odontología</a>
-            <a [routerLink]="['/especialidades', 3]" class="btn btn-outline-primary rounded-pill px-4">Psicología</a>
-            <a [routerLink]="['/especialidades', 4]" class="btn btn-outline-primary rounded-pill px-4">Traumatología</a>
-            <a [routerLink]="['/especialidades']" class="btn btn-outline-primary rounded-pill px-4">Ver todas</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- Sección de Valor y Confianza -->
-  <div class="trust-section py-5">
-    <div class="container">
-      <div class="row align-items-center mb-4">
-        <div class="col-md-8">
-          <div class="d-flex align-items-center">
-            <div class="trophy-icon me-3">
-              <i class="fas fa-trophy text-primary"></i>
-            </div>
-            <div>
-              <h2 class="mb-1">GeoMedicos identifica, audita y selecciona solo a los mejores especialistas.</h2>
-              <p class="mb-0 text-muted">Accede a los mejores médicos, centros, psicólogos y dentistas.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 text-md-end">
-          <a href="#" class="btn btn-outline-primary rounded-pill">
-            <span>Proceso de selección</span>
-            <i class="fas fa-chevron-right ms-2"></i>
-          </a>
-        </div>
-      </div>
+      <div class="buscador-principal bg-white rounded-4 p-4 shadow-lg mx-auto" style="max-width: 900px;">
+        <div class="row g-3 align-items-center">
       
-      <!-- Estadísticas -->
-      <div class="row stat-cards g-4">
-        <div class="col-md-4">
-          <div class="stat-card h-100">
-            <div class="stat-circle">
-              <span class="stat-number">85%</span>
+          <!-- Campo búsqueda -->
+          <div class="col-md-5">
+            <div class="input-group border-bottom pb-2">
+              <span class="input-group-text bg-transparent border-0">
+                <i class="fas fa-search text-primary fs-5"></i>
+              </span>
+              <input type="text" 
+                     class="form-control form-control-lg border-0 ps-0" 
+                     placeholder="Especialidad o nombre del médico"
+                     [(ngModel)]="terminoBusqueda">
             </div>
-            <p class="stat-text">de los casos, un GeoMedico acierta en su diagnóstico en la primera consulta.</p>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="stat-card h-100">
-            <div class="stat-circle">
-              <span class="stat-number">95%</span>
+      
+          <!-- Selector localidad -->
+          <div class="col-md-4">
+            <div class="input-group border-bottom pb-2">
+              <span class="input-group-text bg-transparent border-0">
+                <i class="fas fa-map-marker-alt text-primary fs-5"></i>
+              </span>
+              <select class="form-select form-select-lg border-0 ps-0"
+                      [(ngModel)]="provinciaSeleccionada">
+                <option value="">Selecciona provincia</option>
+                <option>Madrid</option>
+                <option>Barcelona</option>
+                <!-- Puedes añadir más provincias -->
+              </select>
             </div>
-            <p class="stat-text">de los consumidores leen las valoraciones antes de tomar una decisión.</p>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="stat-card h-100">
-            <div class="stat-circle">
-              <span class="stat-number">90%</span>
-            </div>
-            <p class="stat-text">de los pacientes encuentra en GeoMedicos al experto más adecuado para su caso.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Sección de Recursos -->
-  <div class="resources-section py-5 bg-light">
-    <div class="container">
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="resource-card h-100">
-            <div class="card-image-container mb-3">
-              <img src="assets/images/medical-articles.jpg" alt="Artículos médicos" class="img-fluid rounded">
-            </div>
-            <h3 class="resource-title">Artículos médicos</h3>
-            <p class="resource-description">El mayor portal de salud de España escrito por doctores de primer nivel.</p>
-            <a href="#" class="btn btn-link text-primary p-0">
-              Leer artículos <i class="fas fa-arrow-right ms-1"></i>
-            </a>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="resource-card h-100">
-            <div class="card-image-container mb-3">
-              <img src="assets/images/medical-dictionary.jpg" alt="Diccionario médico" class="img-fluid rounded">
-            </div>
-            <h3 class="resource-title">Diccionario médico</h3>
-            <p class="resource-description">La información médica más completa de la mano de los mejores especialistas.</p>
-            <a href="#" class="btn btn-link text-primary p-0">
-              Consultar diccionario <i class="fas fa-arrow-right ms-1"></i>
-            </a>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="resource-card h-100">
-            <div class="card-image-container mb-3">
-              <img src="assets/images/diagnosis.jpg" alt="Servicio de diagnóstico médico" class="img-fluid rounded">
-              <div class="purchase-badge">¡Compra ya!</div>
-            </div>
-            <h3 class="resource-title">Servicio de diagnóstico médico</h3>
-            <p class="resource-description">Encuentra centros y laboratorios especializados cerca de ti.</p>
-            <a href="#" class="btn btn-link text-primary p-0">
-              Buscar servicios <i class="fas fa-arrow-right ms-1"></i>
-            </a>
+      
+          <!-- Botón buscar -->
+          <div class="col-md-3">
+            <button class="btn btn-warning btn-lg w-100 py-3 shadow-sm"
+                    (click)="buscar()">
+              <i class="fas fa-search me-2"></i>Buscar ahora
+            </button>
           </div>
         </div>
       </div>
+
+      <!-- Especialidades rápidas -->
+      <div class="especialidades-rapidas mt-5">
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+          <a [routerLink]="['/especialidades', 1]" class="btn btn-outline-primary rounded-pill px-4">Dermatología</a>
+          <a [routerLink]="['/especialidades', 2]" class="btn btn-outline-primary rounded-pill px-4">Odontología</a>
+          <a [routerLink]="['/especialidades', 3]" class="btn btn-outline-primary rounded-pill px-4">Psicología</a>
+          <a [routerLink]="['/especialidades', 4]" class="btn btn-outline-primary rounded-pill px-4">Traumatología</a>
+          <a [routerLink]="['/especialidades']" class="btn btn-outline-primary rounded-pill px-4">Ver todas</a>
+        </div>
+      </div>
+
     </div>
   </div>
+</div>

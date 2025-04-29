@@ -1,135 +1,30 @@
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a [routerLink]="['/']">Inicio</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        @if (especialidad) {
-                            {{ especialidad.nombre }}
-                        } @else {
-                            Especialistas
-                        }
-                    </li>
-                </ol>
-            </nav>
-        </div>
-    </div>
+<div class="container py-1">
+<app-especialista-encabezado></app-especialista-encabezado>
 
-    <h2 class="mb-4">
-        @if (especialidad) {
-            Médicos especialistas en {{ especialidad.nombre }}
-        } @else {
-            Médicos especialistas
-        }
-    </h2>
+<app-especialista-filtros
+  [termino]="terminoBusqueda"
+  [orden]="ordenSeleccionado"
+  (onBuscar)="actualizarTermino($event)"
+  (onOrdenar)="cambiarOrden($event)">
+</app-especialista-filtros>
 
-    <!-- Filtros -->
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Buscar por nombre del médico..." 
-                       [(ngModel)]="terminoBusqueda" 
-                       (keyup.enter)="buscarMedicos()">
-                <button class="btn btn-primary" type="button" (click)="buscarMedicos()">
-                    <i class="fas fa-search"></i> Buscar
-                </button>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <select class="form-select" [(ngModel)]="ordenSeleccionado" (change)="cambiarOrden()">
-                <option value="nombre">Ordenar por nombre</option>
-                <option value="tarifa_asc">Precio: de menor a mayor</option>
-                <option value="tarifa_desc">Precio: de mayor a menor</option>
-                <option value="valoracion">Mejor valorados</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- Estado de carga y errores -->
+   
     @if (cargando) {
-        <div class="d-flex justify-content-center my-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
-            </div>
-        </div>
+        <app-cargando-spinner></app-cargando-spinner>
     } @else if (error) {
         <div class="alert alert-danger">{{ error }}</div>
     } @else if (medicosFiltrados.length === 0) {
         <div class="alert alert-info">No se encontraron médicos que coincidan con su búsqueda.</div>
     } @else {
         <!-- Listado de médicos -->
-        <div class="row">
-            @for (medico of medicosPaginados; track medico.colegiado) {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        @if (medico.imagenUrl) {
-                            <img [src]="medico.imagenUrl" class="card-img-top" alt="{{ medico.nombre }}">
-                        } @else {
-                            <div class="text-center py-3 bg-light">
-                                <i class="fas fa-user-md fa-4x text-secondary"></i>
-                            </div>
-                        }
-                        <div class="card-body">
-                            <h5 class="card-title">Dr. {{ medico.nombre }} {{ medico.apellidos }}</h5>
-                            @if (medico.valoracionPromedio) {
-                                <div class="mb-2">
-                                    @for (star of [1,2,3,4,5]; track star) {
-                                        <i class="fas fa-star" [class.text-warning]="star <= medico.valoracionPromedio" [class.text-muted]="star > medico.valoracionPromedio"></i>
-                                    }
-                                    <span class="ms-2">{{ medico.valoracionPromedio }}/5</span>
-                                </div>
-                            }
-                            @if (medico.especialidades && medico.especialidades.length > 0) {
-                                <div class="mb-2">
-                                    @for (especialidad of medico.especialidades; track especialidad) {
-                                        <span class="badge bg-info me-1">{{ especialidad }}</span>
-                                    }
-                                </div>
-                            }
-                            <p class="card-text">
-                                <strong>Tarifa:</strong> {{ medico.tarifa | currency:'EUR':'symbol':'1.2-2' }}
-                            </p>
-                            <div class="mt-3">
-                                <button class="btn btn-outline-primary me-2" (click)="verDetalle(medico)">
-                                    Ver perfil
-                                </button>
-                                <button class="btn btn-warning" (click)="solicitarCita(medico)">
-                                    Solicitar cita
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+        <app-especialista-listado-medicos [medicos]="medicosPaginados" (verDetalle)="verDetalle($event)" (solicitarCita)="solicitarCita($event)"></app-especialista-listado-medicos>
 
-        <!-- Paginación -->
-        @if (medicosFiltrados.length > elementosPorPagina) {
-            <nav aria-label="Navegación de páginas">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" [class.disabled]="paginaActual === 1">
-                        <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</a>
-                    </li>
-                    @for (pagina of numeroPaginas; track pagina) {
-                        <li class="page-item" [class.active]="pagina === paginaActual">
-                            <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
-                        </li>
-                    }
-                    <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
-                        <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</a>
-                    </li>
-                </ul>
-            </nav>
-        }
+
+        <app-especialista-paginacion></app-especialista-paginacion>
     }
 
     <!-- Componente Modal para detalle del médico -->
     @if (medicoSeleccionado) {
-        <app-especialista-detalle
-            [medico]="medicoSeleccionado"
-            (cerrar)="cerrarDetalle()"
-            (solicitarCita)="solicitarCita($event)">
-        </app-especialista-detalle>
+        <app-especialista-detalle [medico]="medicoSeleccionado" (cerrar)="cerrarDetalle()" (solicitarCita)="solicitarCita($event)"></app-especialista-detalle>
     }
 </div>

@@ -1,11 +1,12 @@
-import { IUser } from "./iuser";
+import { IUser } from "../auth/interfaces/iuser";
+import { IEspecialidad } from "./iespecialidad";
 
 export interface IMedico extends IUser {
     colegiado: string; //el extends Iuser ya trae correo y role
     idUsuario: number;
     nombre: string;
     apellidos: string;
-    especialidades?: string[];
+    especialidades?: IEspecialidad[];
     idEspecialidades?: number[];
     telefono?: string;
     tarifa: number;
@@ -16,10 +17,3 @@ export interface IMedico extends IUser {
 }
 
 
-
-// import { IUser } from "./iuser";
-
-// export interface IMedico extends IUser{
-//     telefono?: string;
-//     especialidad: String;
-// }
