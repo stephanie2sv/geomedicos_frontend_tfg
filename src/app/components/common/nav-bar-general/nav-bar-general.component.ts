@@ -18,6 +18,15 @@ export class NavBarGeneralComponent {
     private router: Router 
   ) {}
 
+  
+  irAreaPersonal(): void {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/']);
