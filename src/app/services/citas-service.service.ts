@@ -10,17 +10,24 @@ import { Cita } from '../interfaces/cita';
 })
 export class CitasService {
 
-  private apiUrl = `${environment.apiUrl}/añadirruta!!`
+  private apiUrl = `${environment.apiUrl}/api/paciente`
 
   constructor(private  http : HttpClient){}
 
   getCitasPorId(idCitas: number):Observable<Cita[]>{
     console.log('llamando a getCitasPorId()...');
-    return this.http.get<Cita[]>(`${this.apiUrl}/citas/${idCitas}`)
+    return this.http.get<Cita[]>(`${this.apiUrl}/miscitas/${idCitas}`)
   }
 
   getAllCitas(): Observable<Cita[]> {
     return this.http.get<Cita[]>(`${this.apiUrl}/citas`)
   }
 
+  getCitasPorUsuario(idUsuario: number) {
+    return this.http.get<Cita[]>(`${this.apiUrl}/miscitas/${idUsuario}`);
+  }
+
+  crearCita(cita: Cita): Observable<Cita> {
+    return this.http.post<Cita>(`${this.apiUrl}/miscitas/alta`, cita);
+  }
 }

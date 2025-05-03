@@ -1,0 +1,19 @@
+<div class="form-check mb-2">
+    <input
+    type="radio"
+    class="form-check-input"
+    [id]="'turno' + turno.idHorario"
+    [value]="turno.idHorario"
+    [formControl]="control"
+    (change)="onClick()"/>
+    <label
+      class="form-check-label"
+      [for]="'turno' + (turno.idHorario)">
+      {{turno.medico.especialidad.nombre}}
+      {{ turno.medico.usuario.nombre }}
+      {{ turno.medico.usuario.apellidos }}
+      — {{ turno.medico.tarifa }} €
+      <span class="text-muted">({{ turno.horaInicio }})</span>
+    </label>
+
+  </div>

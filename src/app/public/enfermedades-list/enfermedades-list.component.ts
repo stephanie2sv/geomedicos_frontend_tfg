@@ -1,7 +1,7 @@
 import { EnfermedadesService } from './../../services/enfermedades.service';
 import { Component, OnInit } from '@angular/core';
 import { IEnfermedad } from '../../interfaces/ienfermedad';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EnfermedadesDetalleComponent } from '../enfermedades-detalle/enfermedades-detalle.component';
@@ -46,7 +46,7 @@ cargando: boolean = true;
 error: string | null = null;
 
 
-constructor (private eservice: EnfermedadesService, private espeservice: EspecialidadesService) {}
+constructor (private eservice: EnfermedadesService, private espeservice: EspecialidadesService, private router: Router) {}
 
 ngOnInit(): void {
   this.cargarDatos();
@@ -208,9 +208,17 @@ cerrarDetalle(): void {
 
 
 buscarDoctoresPorEnfermedad(enfermedad: IEnfermedad): void {
-  //Esta funcion se terminara de implementer cuando ser termine el back
-  console.log('Buscando doctores para: ', enfermedad.nombre);
-  //aqui se podria navegar a otra ruta o mostrar otrto componente
+  const idEspecialidad = enfermedad.idEspecialidad;
+
+  if (idEspecialidad) {
+    // Redirigir a la ruta de especialistas con ID
+    this.router.navigate(['/especialidades', idEspecialidad]);
+  } else {
+    console.warn('No se pudo obtener la especialidad de la enfermedad');
+  }
+
+  // Cierra el modal después de redirigir
+  this.cerrarDetalle();
 }
 
 actualizarTermino(nuevoTermino: string): void {

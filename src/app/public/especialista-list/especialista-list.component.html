@@ -17,10 +17,16 @@
         <div class="alert alert-info">No se encontraron médicos que coincidan con su búsqueda.</div>
     } @else {
         <!-- Listado de médicos -->
-        <app-especialista-listado-medicos [medicos]="medicosPaginados" (verDetalle)="verDetalle($event)" (solicitarCita)="solicitarCita($event)"></app-especialista-listado-medicos>
+        <app-especialista-listado-medicos [medicos]="medicosPaginados" (verDetalle)="verDetalle($event)" (solicitarCita)="solicitarCita($event)"></app-especialista-listado-medicos> 
+        
+    }
 
-
-        <app-especialista-paginacion></app-especialista-paginacion>
+    @if(medicosPaginados.length>elementosPorPagina){
+        <app-especialista-paginacion
+        [pagina]="paginaActual"
+        [totalPaginas]="totalPaginas"
+        (onPaginaChange)="cambiarPagina($event)">
+      </app-especialista-paginacion>
     }
 
     <!-- Componente Modal para detalle del médico -->

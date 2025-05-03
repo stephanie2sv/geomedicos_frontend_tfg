@@ -1,0 +1,7 @@
+.navbar-btn {
+    min-width: 140px;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    margin-bottom: 0.5rem; /* separa en modo colapsado */
+  }

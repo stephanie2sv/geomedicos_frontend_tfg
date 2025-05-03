@@ -14,6 +14,7 @@ import { EspecialistaFiltrosComponent } from "../../components/especialistas/esp
 import { CargandoSpinnerComponent } from "../../components/shared/cargando-spinner/cargando-spinner.component";
 import { EspecialistaListadoMedicosComponent } from '../../components/especialistas/especialista-listado-medicos/especialista-listado-medicos.component';
 import { EspecialistaPaginacionComponent } from '../../components/especialistas/especialista-paginacion/especialista-paginacion.component';
+import { EnfermedadPaginacionComponent } from "../../components/enfermedades/enfermedad-paginacion/enfermedad-paginacion.component";
 
 @Component({
   selector: 'app-especialista-list',
@@ -27,8 +28,8 @@ import { EspecialistaPaginacionComponent } from '../../components/especialistas/
     EspecialistaFiltrosComponent,
     CargandoSpinnerComponent,
     EspecialistaListadoMedicosComponent,
-    EspecialistaPaginacionComponent
-  ],
+    EspecialistaPaginacionComponent,
+],
   templateUrl: './especialista-list.component.html',
   styleUrls: ['./especialista-list.component.css']
 })
@@ -196,20 +197,34 @@ export class EspecialistaListComponent implements OnInit {
     this.actualizarPaginacion();
   }
 
-  actualizarPaginacion(): void {
-    this.totalPaginas = Math.ceil(this.medicosFiltrados.length / this.elementosPorPagina);
-    this.numeroPaginas = Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
-    this.cambiarPagina(1);
+//Metodosx de paginacion
+actualizarPaginacion(): void {
+  console.log('Filtradas:', this.medicosFiltrados.length);
+console.log('Elementos por página:', this.elementosPorPagina);
+  this.totalPaginas = Math.ceil(this.medicosFiltrados.length / this.elementosPorPagina);
+  this.numeroPaginas = Array.from({ length: this.totalPaginas }, (_, i) => i + 1);
+
+  // Mantén la página actual si está dentro del nuevo rango
+  if (this.paginaActual > this.totalPaginas) {
+    this.paginaActual = this.totalPaginas;
+  }
+  if (this.paginaActual < 1) {
+    this.paginaActual = 1;
   }
 
-  cambiarPagina(pagina: number): void {
-    if (pagina < 1 || pagina > this.totalPaginas) return;
+  this.cambiarPagina(this.paginaActual);
+}
 
-    this.paginaActual = pagina;
-    const inicio = (pagina - 1) * this.elementosPorPagina;
-    const fin = inicio + this.elementosPorPagina;
-    this.medicosPaginados = this.medicosFiltrados.slice(inicio, fin);
+cambiarPagina(pagina: number): void{
+  if (pagina < 1 || pagina > this.totalPaginas) {
+    return;
   }
+
+  this.paginaActual = pagina;
+  const inicio = (pagina - 1) * this.elementosPorPagina;
+  const fin = inicio + this.elementosPorPagina;
+  this.medicosPaginados = this.medicosFiltrados.slice(inicio, fin);
+}
 
   verDetalle(medico: IMedico): void {
     this.medicoSeleccionado = medico;

@@ -22,21 +22,24 @@
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <button class="btn btn-outline-primary me-2" (click)="irAreaPersonal()">Área Personal</button>
+          <button class="btn btn-outline-primary me-2 navbar-btn" (click)="irAreaPersonal()">Área Personal</button>
         </li>
-        
+      
         <li class="nav-item">
-          <a class="btn btn-outline-dark me-2" routerLink="/pide-cita">Pide cita</a>
+          <a class="btn btn-outline-dark me-2 navbar-btn" routerLink="/pide-cita">Pide cita</a>
         </li>
-
+      
         @if (!(authService.currentUser$ | async)) {
           <li class="nav-item">
-            <a class="btn btn-outline-primary" routerLink="/login">Iniciar sesión</a>
+            <button class="btn btn-outline-primary me-2 navbar-btn" routerLink="/login">Iniciar sesión</button>
           </li>
         } @else {
-          <a class="btn btn-outline-primary" (click)="logout()">Cerrar sesión</a>
+          <li class="nav-item">
+            <button class="btn btn-outline-primary me-2 navbar-btn" (click)="logout()">Cerrar sesión</button>
+          </li>
         }
       </ul>
+      
     </div>
   </div>
 </nav>

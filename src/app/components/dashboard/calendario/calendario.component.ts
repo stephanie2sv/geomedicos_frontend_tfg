@@ -6,6 +6,9 @@ import { CitasService } from "../../../services/citas-service.service";
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { MatCard , MatCardContent} from "@angular/material/card";
 import { Cita } from "../../../interfaces/cita";
+import { IHorarioDisponible } from "../../../interfaces/ihorario-disponible";
+import { HorariosMedicosService } from "../../../services/horarios-medicos.service";
+import { AuthService } from "../../../auth/services/auth.service";
 
 
 @Component({
@@ -25,29 +28,46 @@ export class CalendarioComponent implements OnInit {
     events:[]
   }
 
-
-constructor(private citasService: CitasService){}
-
-ngOnInit(){
-  this.cargarEventos();
-}
-
-cargarEventos(){
-  this.citasService.getAllCitas().subscribe((citas:Cita[])=>{
-    console.log('Citas cargados:',citas);
-    const eventos:EventInput[]=citas.map(cita=>({
-      title: `Cita con ${cita.nombrePaciente}`,
-      start: cita.fecha
-    }));
-
-    this.calendarOptions={
-      ...this.calendarOptions,
-      events:eventos
-    };
-  },
-  error=>console.error('Error al cargar citas:',error)
-);
-}
-
+   constructor(
+     private citasService: CitasService,
+     private authService: AuthService,
+     private horarioMedicoService: HorariosMedicosService 
+   ) {}
+   
+   horarios: IHorarioDisponible[] = [];
+   ngOnInit() {
+     this.horarioMedicoService.getTodosLosHorarios().subscribe({
+       next: horarios => {
+         this.horarios = horarios;
+         this.cargarEventos(); 
+       },
+       error: err => console.error('Error cargando horarios:', err)
+     });
+   }
+   
+   cargarEventos() {
+     const user = this.authService.getCurrentUserValue();
+   if (!user) return;
+ 
+   this.citasService.getCitasPorUsuario(user.idUsuario).subscribe(
+     citas => {
+       const eventos = citas.map(cita => {
+         const horario = this.horarios.find(h => h.idHorario === cita.idHorario);
+         const hora = horario?.horaInicio || '10:00:00'; 
+ 
+         return {
+           title: user.role === 'PACIENTE'
+             ? `Cita médica`
+             : `Cita con ${cita.nombrePaciente || 'Paciente'}`,
+           start: `${cita.fecha}T${hora}`,
+           allDay: false
+         };
+       });
+       
+       this.calendarOptions = { ...this.calendarOptions, events: eventos };
+     },
+     error => console.error('Error al cargar citas:', error)
+   );
+  }
 
 }

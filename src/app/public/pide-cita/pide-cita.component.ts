@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IMedico } from '../../interfaces/imedico';
 import { AuthService } from '../../auth/services/auth.service';
 import { Cita } from '../../interfaces/cita';
 import { IEspecialidad } from '../../interfaces/iespecialidad';
-import { HttpErrorResponse } from '@angular/common/http';
-import { MedicosService } from '../../services/medicos.service';
 import { EspecialidadesService } from '../../services/especialidades.service';
 import { HorariosMedicosService } from '../../services/horarios-medicos.service';
+import { CitasService } from '../../services/citas-service.service';
+import { MedicoCardComponent } from '../../components/medico-card/medico-card.component';
+import { IHorarioDisponible } from '../../interfaces/ihorario-disponible';
+
 
 
 @Component({
   selector: 'app-pide-cita',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,MedicoCardComponent],
   templateUrl: './pide-cita.component.html',
   styleUrls: ['./pide-cita.component.scss']
 
@@ -23,113 +24,108 @@ import { HorariosMedicosService } from '../../services/horarios-medicos.service'
 export class PideCitaComponent implements OnInit {
   citaForm!: FormGroup;
   especialidades: IEspecialidad[] = [];
-  medicos: IMedico[] = [];
-  medicosFiltrados: IMedico[] = [];
+  medicosFiltrados: IHorarioDisponible[] = [];
   minFecha: string = '';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private horarioMedicoService: HorariosMedicosService,
-    private medicoService: MedicosService,
     private especialidadesService: EspecialidadesService,
+    private citasService: CitasService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    // 1) fijar minFecha a hoy en formato YYYY-MM-DD
+    this.minFecha = new Date().toISOString().split('T')[0];
+
+    // 2) construir el formulario
     this.citaForm = this.fb.group({
       especialidad: ['', Validators.required],
       fecha: ['', Validators.required],
-      idMedico: ['', Validators.required]
+      idMedico: ['', Validators.required],
+      idHorario:    [null, Validators.required] 
     });
-  
+
+    // 3) cargar lista de especialidades
     this.especialidadesService.getEspecialidades().subscribe({
-      next: (especialidades) => this.especialidades = especialidades,
-      error: (error) => console.error('Error cargando especialidades:', error)
+      next: (esps) => this.especialidades = esps,
+      error: (err) => console.error('Error cargando especialidades:', err)
     });
-  
-    this.citaForm.get('especialidad')?.valueChanges.subscribe(() => this.buscarMedicosDisponibles());
-    this.citaForm.get('fecha')?.valueChanges.subscribe(() => this.buscarMedicosDisponibles());
+
+    // 4) reaccionar a cambios para recargar médicos
+    this.citaForm.get('especialidad')!.valueChanges
+      .subscribe(() => this.buscarMedicosDisponibles());
+    this.citaForm.get('fecha')!.valueChanges
+      .subscribe(() => this.buscarMedicosDisponibles());
   }
-  
+
+  get idMedicoControl(): FormControl {
+    return this.citaForm.get('idMedico') as FormControl;
+  }
+
+  get idHorarioControl(): FormControl {
+    return this.citaForm.get('idHorario') as FormControl;
+  }
+
   buscarMedicosDisponibles(): void {
-    const especialidadId = this.citaForm.value.especialidad;
+    const espId = this.citaForm.value.especialidad;
     const fecha = this.citaForm.value.fecha;
-  
-    if (especialidadId && fecha) {
-      this.horarioMedicoService.getMedicosDisponibles(especialidadId, fecha).subscribe({
-        next: (medicos) => this.medicosFiltrados = medicos,
-        error: (error) => console.error('Error buscando médicos disponibles:', error)
-      });
+    if (espId && fecha) {
+      this.horarioMedicoService
+        .getMedicosDisponibles(espId, fecha)            
+        .subscribe({
+          next: (turnos: IHorarioDisponible[]) => {
+            this.medicosFiltrados = turnos;             
+          },
+          error: err => console.error('Error buscando médicos:', err)
+        });
+    } else {
+      this.medicosFiltrados = [];
     }
   }
-
-  cargarEspecialidades(): void {
-    this.especialidadesService.getEspecialidades().subscribe({
-      next: (especialidades: IEspecialidad[]) => {
-        this.especialidades = especialidades;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error cargando especialidades:', error.message);
-      }
-    });
-  }
-
-  cargarMedicos(): void {
-    this.medicoService.getMedicos().subscribe({
-      next: (medicos: IMedico[]) => {
-        this.medicos = medicos;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error cargando médicos:', error.message);
-      }
-    });
-  }
-
-  filtrarMedicosPorEspecialidad(idEspecialidad: number): void {
-    this.medicosFiltrados = this.medicos.filter(medico =>
-      medico.especialidades?.some(esp => esp.idEspecialidad === idEspecialidad)
-    );
-  }
-
-  formatDateToDatetimeLocal(date: Date): string {
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-  }
-
   onSubmit(): void {
     if (this.citaForm.invalid) return;
 
-    const currentUser = this.authService.getCurrentUserValue();
-    const medico = this.medicos.find(m => m.idUsuario === this.citaForm.value.idMedico);
+    const user = this.authService.getCurrentUserValue();
+    console.log("user: ",user)
+    if (!user) {
+      console.error('Usuario no autenticado');
+      return;
+    }
 
-    if (!currentUser || !medico) {
-      console.error('Datos incorrectos para crear la cita.');
+    const medicoId = this.citaForm.value.idMedico;
+    const medicoHorario = this.medicosFiltrados.find(m => m.medico.usuario.idUsuario === medicoId);
+    if (!medicoHorario) {
+      console.error('Médico no válido');
       return;
     }
 
     const nuevaCita: Cita = {
       idCita: 0,
-      idPaciente: currentUser.idUsuario,
-      nombrePaciente: `${currentUser.nombre} ${currentUser.apellidos}`,
-      idMedico: medico.idUsuario,
-      nombreMedico: `${medico.nombre} ${medico.apellidos}`,
-      fecha: this.citaForm.value.fecha,
-      estado: 'pendiente'
+      idUsuario: user.idUsuario,
+      nombrePaciente: `${user.nombre} ${user.apellidos}`,
+      idMedico: medicoHorario.medico.usuario.idUsuario,
+      nombreMedico: `${medicoHorario.medico.usuario.nombre} ${medicoHorario.medico.usuario.apellidos}`,
+      fecha: new Date(this.citaForm.value.fecha),
+      estado: 'PENDIENTE',
+      idHorario:medicoHorario.idHorario
     };
-
-    console.log('Cita creada:', nuevaCita);
-    this.router.navigate(['/usuariodashboard']);
+    console.log(nuevaCita)
+    this.citasService.crearCita(nuevaCita).subscribe({
+      next: created => {
+        console.log('Cita creada:', created);
+        this.router.navigate(['/dashboardCliente']);
+      },
+      error: err => console.error('Error al crear cita:', err)
+    });
   }
 
-  onFechaChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const fechaSeleccionada = input.value;
-  
-    const especialidadSeleccionada = this.citaForm.get('especialidad')?.value;
-  
-    if (especialidadSeleccionada && fechaSeleccionada) {
-      this.buscarMedicosDisponibles();
-    }
+  onTurnoSeleccionado(seleccion: { idMedico: number; turnoId: number }) {
+    this.citaForm.patchValue({
+      idMedico: seleccion.idMedico,
+      idHorario: seleccion.turnoId
+    });
   }
 }
