@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IMedico } from '../../../interfaces/imedico';
 import { MedicoCardComponent } from '../../common/medico-card/medico-card.component';
+import { IMedicoCard } from '../../../interfaces/MedicoCard';
 
 
 @Component({
@@ -11,9 +11,9 @@ import { MedicoCardComponent } from '../../common/medico-card/medico-card.compon
   styleUrl: './especialista-listado-medicos.component.css'
 })
 export class EspecialistaListadoMedicosComponent {
-  @Input() medicos: IMedico[] = [];
+  @Input() medicos: IMedicoCard[] = [];
 
-  @Output() verDetalle = new EventEmitter<IMedico>();
-  @Output() solicitarCita = new EventEmitter<IMedico>();
+  @Output() verDetalle = new EventEmitter<IMedicoCard>();
+  @Output() solicitarCita = new EventEmitter<IMedicoCard>();
 
 }

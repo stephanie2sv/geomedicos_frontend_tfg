@@ -56,23 +56,23 @@ export class AgendaComponent implements OnInit {
   
   cargarEventos() {
     const user = this.authService.getCurrentUserValue();
-  if (!user) return;
+    if (!user) return;
 
-  this.citasService.getCitasPorUsuario(user.idUsuario).subscribe(
-    citas => {
-      const eventos = citas.map(cita => {
-        const horario = this.horarios.find(h => h.idHorario === cita.idHorario);
-        const hora = horario?.horaInicio || '10:00:00'; 
-
-        return {
-          title: user.role === 'PACIENTE'
-            ? `Cita médica`
-            : `Cita con ${cita.nombrePaciente || 'Paciente'}`,
-          start: `${cita.fecha}T${hora}`,
-          allDay: false
-        };
-      });
-      
+    this.citasService.getCitasPorUsuario(user.idUsuario).subscribe(
+      citas => {
+        const eventos = citas.map(cita => {
+          const horario = this.horarios.find(h => h.idHorario === cita.idHorario);
+          const hora = horario?.horaInicio || '10:00:00'; 
+        
+          return {
+            title: user.role === 'PACIENTE'
+              ? `Cita médica`
+              : `Cita con ${cita.nombrePaciente || 'Paciente'}`,
+            start: `${cita.fecha}T${hora}`,
+            allDay: false
+          };
+        });
+        
       this.calendarOptions = { ...this.calendarOptions, events: eventos };
     },
     error => console.error('Error al cargar citas:', error)

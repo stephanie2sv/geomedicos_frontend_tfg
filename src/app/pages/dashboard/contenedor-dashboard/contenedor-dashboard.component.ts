@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
 import { DatosDesplegableComponent } from '../../../components/dashboard/datos-desplegable/datos-desplegable.component';
 import { ContenedorSeleccionadoComponent } from '../../../components/dashboard/contenedor-seleccionado/contenedor-seleccionado.component';
 import { IUser } from '../../../auth/interfaces/iuser';
-import { IMedico } from '../../../interfaces/imedico';
+import { IMedicoCard } from '../../../interfaces/MedicoCard';
+import { IMedicoDto } from '../../../interfaces/imedico-dto';
 
 @Component({
   selector: 'app-contenedor-dashboard',
@@ -16,7 +17,7 @@ import { IMedico } from '../../../interfaces/imedico';
 })
 export class DashboardComponent implements OnInit {
   role: string | null = null;
-  persona: IUser | IMedico | null = null;
+  persona: IUser | IMedicoDto | null = null;
   componenteActual: string = 'area-personal';
   mostrarDatos = true;
 

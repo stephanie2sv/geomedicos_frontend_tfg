@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IMedicoDto } from '../../interfaces/imedico-dto';
 import { ControlContainer, FormControl, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { IHorarioDisponible } from '../../interfaces/ihorario-disponible';
 

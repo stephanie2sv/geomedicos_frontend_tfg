@@ -27,6 +27,12 @@ export class CitasService {
     return this.http.get<Cita[]>(`${this.apiUrl}/miscitas/${idUsuario}`);
   }
 
+  eliminarCita(idCita: number): Observable<string> {
+    return this.http.delete<string>(`${this.apiUrl}/miscitas/eliminar/${idCita}`, {
+      responseType: 'text' as 'json'
+    });
+  }
+
   crearCita(cita: Cita): Observable<Cita> {
     return this.http.post<Cita>(`${this.apiUrl}/miscitas/alta`, cita);
   }

@@ -16,7 +16,7 @@
     } @else if (medicosFiltrados.length === 0) {
         <div class="alert alert-info">No se encontraron médicos que coincidan con su búsqueda.</div>
     } @else {
-        <!-- Listado de médicos -->
+   
         <app-especialista-listado-medicos [medicos]="medicosPaginados" (verDetalle)="verDetalle($event)" (solicitarCita)="solicitarCita($event)"></app-especialista-listado-medicos> 
         
     }
@@ -33,4 +33,10 @@
     @if (medicoSeleccionado) {
         <app-especialista-detalle [medico]="medicoSeleccionado" (cerrar)="cerrarDetalle()" (solicitarCita)="solicitarCita($event)"></app-especialista-detalle>
     }
+    <app-selector-horario 
+    *ngIf="mostrarSelectorHorarios" 
+    [medico]="medicoParaCita" 
+    (cerrar)="cerrarSelectorHorario()" 
+    (confirmarCita)="crearCita($event)">
+</app-selector-horario>
 </div>

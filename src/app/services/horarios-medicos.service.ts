@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { IMedico } from '../interfaces/imedico';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './environment.prod';
 import { Observable } from 'rxjs';

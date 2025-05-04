@@ -2,8 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatCardHeader, MatCardModule,MatCardSubtitle,MatCardContent } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { IUser } from '../../../auth/interfaces/iuser';
-import { IMedico } from '../../../interfaces/imedico';
 import { DatosPersonalesService } from '../../../services/datos-personales.service';
+import { IMedicoCard } from '../../../interfaces/MedicoCard';
+import { IMedicoDto } from '../../../interfaces/imedico-dto';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { DatosPersonalesService } from '../../../services/datos-personales.servi
 export class DatosDesplegableComponent implements OnInit {
 
 @Input() correo!: string;
-@Input() persona:IUser | IMedico | null
+@Input() persona:IUser | IMedicoDto | null
 
 
 
@@ -33,7 +34,7 @@ ngOnInit(): void {
   }
 }
 
-isMedico(persona: IUser | IMedico | null): persona is IMedico {
-  return (persona as IMedico)?.especialidades !== undefined && (persona as IMedico)?.tratamientos !== undefined;
+isMedico(persona: IUser | IMedicoDto | null): persona is IMedicoDto {
+  return (persona as IMedicoDto)?.especialidades !== undefined && (persona as IMedicoDto)?.tratamientos !== undefined;
 }
 }

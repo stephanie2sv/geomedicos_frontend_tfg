@@ -1,5 +1,5 @@
 <div class="card-body">
-    <h5 class="card-title mb-1 text-primary">Dr. {{ medico.nombre }} {{ medico.apellidos }}</h5>
+    <h5 class="card-title mb-1 text-primary">Dr. {{ medico.usuario.nombre }} {{ medico.usuario.apellidos }}</h5>
     @if (medico.valoracionPromedio) {
         <div class="mb-2 text-warning">
             @for (star of [1,2,3,4,5]; track star) {

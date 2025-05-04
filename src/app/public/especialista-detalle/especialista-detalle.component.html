@@ -1,68 +1,54 @@
 
-<div class="modal fade show" tabindex="-1" style="display: block;">
+<div class="modal show"  style="display: block;">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Dr. {{ medico.nombre }} {{ medico.apellidos }}</h5>
-          <button type="button" class="btn-close" (click)="onCerrar()"></button>
+          <h5 class="modal-title">Dr. {{ medico.usuario.nombre }} {{ medico.usuario.apellidos }}</h5>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-md-4 text-center mb-3">
-              @if (medico.imagenUrl) {
-                <img [src]="medico.imagenUrl" class="img-fluid rounded" alt="{{ medico.nombre }}">
-              } @else {
                 <div class="text-center py-5 bg-light rounded">
                   <i class="fas fa-user-md fa-5x text-secondary"></i>
                 </div>
-              }
-              
-              @if (medico.valoracionPromedio) {
-                <div class="mt-3">
-                  @for (star of [1,2,3,4,5]; track star) {
-                    <i class="fas fa-star" [class.text-warning]="star <= medico.valoracionPromedio" [class.text-muted]="star > medico.valoracionPromedio"></i>
-                  }
-                  <div class="mt-1">{{ medico.valoracionPromedio }}/5</div>
-                </div>
-              }
               
               <div class="mt-3">
                 <p class="mb-0"><strong>Nº Colegiado:</strong> {{ medico.colegiado }}</p>
-                @if (medico.telefono) {
-                  <p class="mb-0"><strong>Teléfono:</strong> {{ medico.telefono }}</p>
+                @if (medico.usuario.telefono) {
+                  <p class="mb-0"><strong>Teléfono:</strong> {{ medico.usuario.telefono }}</p>
                 }
               </div>
             </div>
             
             <div class="col-md-8">
-              @if (medico.especialidades && medico.especialidades.length > 0) {
+              @if (medico.especialidades) {
                 <div class="mb-3">
                   <h6>Especialidades:</h6>
                   <div>
-                    @for (especialidad of medico.especialidades; track especialidad) {
-                      <span class="badge bg-info me-1 mb-1">{{ especialidad }}</span>
+                    @for (especialidad of medico.especialidades; track especialidad.idEspecialidad) {
+                      <span class="badge bg-info me-1 mb-1">{{ especialidad.nombre }}</span>
                     }
                   </div>
                 </div>
               }
               
-              @if (medico.tratamientos && medico.tratamientos.length > 0) {
+              @if (medico.tratamientos) {
                 <div class="mb-3">
                   <h6>Tratamientos:</h6>
                   <ul>
-                    @for (tratamiento of medico.tratamientos; track tratamiento) {
-                      <li>{{ tratamiento }}</li>
+                    @for (tratamiento of medico.tratamientos; track tratamiento.idTratamiento) {
+                      <li>{{ tratamiento.nombre }}</li>
                     }
                   </ul>
                 </div>
               }
               
-              @if (medico.clinicas && medico.clinicas.length > 0) {
+              @if (medico.clinicas) {
                 <div class="mb-3">
                   <h6>Consulta en:</h6>
                   <ul>
-                    @for (clinica of medico.clinicas; track clinica) {
-                      <li>{{ clinica }}</li>
+                    @for (clinica of medico.clinicas; track clinica.idClinica) {
+                      <li>{{ clinica.nombre }}</li>
                     }
                   </ul>
                 </div>
@@ -83,5 +69,5 @@
         </div>
       </div>
     </div>
-    <div class="modal-backdrop fade show"></div>
+    <div class="modal-backdrop show"></div>
   </div>

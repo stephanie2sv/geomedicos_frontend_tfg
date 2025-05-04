@@ -6,5 +6,8 @@ export interface Cita {
     nombreMedico: string;
     fecha: Date;
     estado: string;
-    idHorario:number
+    idHorario:number;
+    especialidad?: string;
+    horaInicio?: string;
+    nombreClinica?: string;
   }

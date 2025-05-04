@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { IMedico } from '../../interfaces/imedico';
+import { Component, OnInit, Output } from '@angular/core';
 import { IEspecialidad } from '../../interfaces/iespecialidad';
 import { EspecialidadesService } from '../../services/especialidades.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { EspecialistaDetalleComponent } from '../especialista-detalle/especialista-detalle.component';
 import { MedicosService } from '../../services/medicos.service';
 import { normalizarTexto } from '../../utils/text-utils';
@@ -14,7 +12,12 @@ import { EspecialistaFiltrosComponent } from "../../components/especialistas/esp
 import { CargandoSpinnerComponent } from "../../components/shared/cargando-spinner/cargando-spinner.component";
 import { EspecialistaListadoMedicosComponent } from '../../components/especialistas/especialista-listado-medicos/especialista-listado-medicos.component';
 import { EspecialistaPaginacionComponent } from '../../components/especialistas/especialista-paginacion/especialista-paginacion.component';
-import { EnfermedadPaginacionComponent } from "../../components/enfermedades/enfermedad-paginacion/enfermedad-paginacion.component";
+import { IMedicoCard } from '../../interfaces/MedicoCard';
+import { SelectorHorarioComponent } from "../../components/especialistas/selector-horario/selector-horario.component";
+import { AuthService } from '../../auth/services/auth.service';
+import { Cita } from '../../interfaces/cita';
+import { throwError } from 'rxjs';
+import { CitasService } from '../../services/citas-service.service';
 
 @Component({
   selector: 'app-especialista-list',
@@ -29,14 +32,15 @@ import { EnfermedadPaginacionComponent } from "../../components/enfermedades/enf
     CargandoSpinnerComponent,
     EspecialistaListadoMedicosComponent,
     EspecialistaPaginacionComponent,
+    SelectorHorarioComponent
 ],
   templateUrl: './especialista-list.component.html',
   styleUrls: ['./especialista-list.component.css']
 })
 export class EspecialistaListComponent implements OnInit {
-  medicos: IMedico[] = [];
-  medicosFiltrados: IMedico[] = [];
-  medicosPaginados: IMedico[] = [];
+  medicos: IMedicoCard[] = [];
+  medicosFiltrados: IMedicoCard[] = [];
+ @Output() medicosPaginados: IMedicoCard[] = [];
   especialidad: IEspecialidad | null = null;
   idEspecialidad: number = 0;
 
@@ -48,13 +52,18 @@ export class EspecialistaListComponent implements OnInit {
   totalPaginas: number = 0;
   numeroPaginas: number[] = [];
 
-  medicoSeleccionado: IMedico | null = null;
+  medicoSeleccionado: IMedicoCard | null = null;
   cargando: boolean = true;
   error: string | null = null;
+
+mostrarSelectorHorarios = false;
+medicoParaCita!: IMedicoCard;
 
   constructor(
     private mService: MedicosService,
     private espeService: EspecialidadesService,
+    private authService: AuthService,
+    private citasService:CitasService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -152,8 +161,8 @@ export class EspecialistaListComponent implements OnInit {
 
     if (termino !== '') {
       this.medicosFiltrados = this.medicos.filter(medico =>
-        normalizarTexto(medico.nombre).includes(termino) ||
-        normalizarTexto(medico.apellidos).includes(termino) ||
+        normalizarTexto(medico.usuario.nombre).includes(termino) ||
+        normalizarTexto(medico.usuario.apellidos).includes(termino) ||
         (medico.especialidades &&
           medico.especialidades.some((especialidad: any) =>
             typeof especialidad === 'string'
@@ -170,12 +179,18 @@ export class EspecialistaListComponent implements OnInit {
     this.actualizarPaginacion();
     this.cargando = false;
   }
+
+  actualizarTermino(nuevoTermino: string): void {
+    this.terminoBusqueda = nuevoTermino || '';
+    this.buscarMedicos();
+  }
+
   ordenarResultados(): void {
     switch (this.ordenSeleccionado) {
       case 'nombre':
         this.medicosFiltrados.sort((a, b) => {
-          const nombreA = a?.nombre ?? '';
-          const nombreB = b?.nombre ?? '';
+          const nombreA = a?.usuario.nombre ?? '';
+          const nombreB = b?.usuario.nombre ?? '';
           return nombreA.localeCompare(nombreB);
         });
         break;
@@ -226,7 +241,7 @@ cambiarPagina(pagina: number): void{
   this.medicosPaginados = this.medicosFiltrados.slice(inicio, fin);
 }
 
-  verDetalle(medico: IMedico): void {
+  verDetalle(medico: IMedicoCard): void {
     this.medicoSeleccionado = medico;
   }
 
@@ -234,13 +249,43 @@ cambiarPagina(pagina: number): void{
     this.medicoSeleccionado = null;
   }
 
-  solicitarCita(medico: IMedico): void {
-    console.log('Solicitando cita con:', medico.nombre);
-    // this.router.navigate(['/citas/solicitar', medico.colegiado]);
+
+  solicitarCita(medico: IMedicoCard) {
+    this.medicoParaCita = medico;
+    this.mostrarSelectorHorarios = true;
   }
 
-  actualizarTermino(nuevoTermino: string): void {
-    this.terminoBusqueda = nuevoTermino || '';
-    this.buscarMedicos();
+  cerrarSelectorHorario() {
+    this.mostrarSelectorHorarios = false;
   }
-}
+
+  crearCita(event: { fecha: Date; idHorario: number }) {
+    const user = this.authService.getCurrentUserValue();
+    const datosUsuario = user;
+
+    if(datosUsuario){
+      const nuevaCita: Cita = {
+        idCita: 0,
+        idUsuario: datosUsuario.idUsuario,
+        nombrePaciente: `${datosUsuario.nombre} ${datosUsuario.apellidos}`,
+        idMedico: this.medicoParaCita.usuario.idUsuario,
+        nombreMedico: `${this.medicoParaCita.usuario.nombre} ${this.medicoParaCita.usuario.apellidos}`,
+        fecha: event.fecha,
+        estado: 'PENDIENTE',
+        idHorario: event.idHorario
+      }
+    
+      this.citasService.crearCita(nuevaCita).subscribe({
+        next: () => {
+          this.mostrarSelectorHorarios = false;
+          this.router.navigate(['/dashboardCliente']);
+        },
+        error: err => console.error('Error al crear cita:', err)
+      });
+    }
+    
+    }
+    
+  }
+
+

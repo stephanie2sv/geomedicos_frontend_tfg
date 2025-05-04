@@ -8,12 +8,6 @@ export interface IUser {
     fechaAlta: Date;
     role: Roles;
     enabled: number;
-
-    colegiado?: string;
-    tarifa?: number;
-    especialidad?: {
-      idEspecialidad: number;
-      nombre: string;
-    };
-    tratamientos?: string[];
+    telefono:string;
+ 
 }

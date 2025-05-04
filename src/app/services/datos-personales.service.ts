@@ -1,10 +1,9 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { IMedico } from '../interfaces/imedico';
 import { IUser } from '../auth/interfaces/iuser';
-import { IAdmin } from './../interfaces/iadmin';
 import { environment } from './environment.prod';
+import { IMedicoCard } from '../interfaces/MedicoCard';
 
 
 @Injectable({
@@ -20,8 +19,8 @@ export class DatosPersonalesService {
     return this.http.get<IUser>(`${this.apiUrl}/detalle?correo=${correo}`);
   }
 
-  getDatosMedicoByEmail(correo: string): Observable<IMedico> {
-    return this.http.get<IMedico>(`${this.apiUrl}/medico?correo=${correo}`);
+  getDatosMedicoByEmail(correo: string): Observable<IMedicoCard> {
+    return this.http.get<IMedicoCard>(`${this.apiUrl}/medico?correo=${correo}`);
   }
 
   actualizarDatosPersonales(usuario: IUser): Observable<IUser> {

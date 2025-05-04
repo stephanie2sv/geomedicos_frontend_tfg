@@ -1,0 +1,12 @@
+<div>
+    <app-citas
+      *ngFor="let cita of citas"
+      [cita]="cita"
+      [esMedico]="esMedico"
+      (eliminar)="onEliminar($event)">
+    </app-citas>
+  </div>
+  
+  <ng-template #noCitas>
+    <p>No hay citas disponibles.</p>
+  </ng-template>

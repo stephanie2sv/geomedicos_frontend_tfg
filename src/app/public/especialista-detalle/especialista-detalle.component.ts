@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IMedico } from '../../interfaces/imedico';
 import { CommonModule } from '@angular/common';
+import { IMedicoCard } from '../../interfaces/MedicoCard';
 
 @Component({
   selector: 'app-especialista-detalle',
@@ -10,9 +10,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './especialista-detalle.component.css'
 })
 export class EspecialistaDetalleComponent {
-  @Input() medico!: IMedico;
+  @Input() medico!: IMedicoCard;
   @Output() cerrar = new EventEmitter<void>();
-  @Output() solicitarCita = new EventEmitter<IMedico>();
+  @Output() solicitarCita = new EventEmitter<IMedicoCard>();
 
   onCerrar() {
     this.cerrar.emit();
@@ -21,5 +21,7 @@ export class EspecialistaDetalleComponent {
   onSolicitarCita() {
     this.solicitarCita.emit(this.medico);
   }
+
+
 }
 

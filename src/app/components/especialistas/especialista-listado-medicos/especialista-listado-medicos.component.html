@@ -2,18 +2,14 @@
             @for (medico of medicos; track medico.colegiado) {
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm rounded-4">
-                        @if (medico.imagenUrl) {
-                            <img [src]="medico.imagenUrl" class="card-img-top" alt="{{ medico.nombre }}">
-                        } @else {
                             <div class="text-center py-3 bg-light">
                                 <i class="fas fa-user-md fa-4x text-secondary"></i>
-                            </div>
-                        }
-                        <app-medico-card
+                    </div>
+                    <app-medico-card
                         [medico]="medico"
                         (verDetalle)="verDetalle.emit($event)"
                         (solicitarCita)="solicitarCita.emit($event)">
-                      </app-medico-card>
+                    </app-medico-card>
                     </div>
                 </div>
             }

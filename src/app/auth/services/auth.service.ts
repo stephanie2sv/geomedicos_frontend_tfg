@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { IUser } from '../interfaces/iuser';
 import { environment } from '../../services/environment.prod';
 import { Roles } from '../models/roles.enum';
-import { IMedico } from '../../interfaces/imedico';
+import { IMedicoDto } from '../../interfaces/imedico-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class AuthService {
 
   private apiUrl = `${environment.apiUrl}`;
 
-  private currentUserSubject = new BehaviorSubject<IUser | IMedico | null>(null);
+  private currentUserSubject = new BehaviorSubject<IUser | IMedicoDto | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
 
@@ -26,8 +26,8 @@ export class AuthService {
   }
 
 
-  login(credentials: { correo: string; password: string }): Observable<IUser | IMedico> {
-    return this.http.post<IUser | IMedico>(`${this.apiUrl}/login`, credentials).pipe(
+  login(credentials: { correo: string; password: string }): Observable<IUser | IMedicoDto> {
+    return this.http.post<IUser | IMedicoDto>(`${this.apiUrl}/login`, credentials).pipe(
       tap(user => {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
@@ -67,7 +67,7 @@ export class AuthService {
   }
 
   
-  getCurrentUserValue(): IUser | null {
+  getCurrentUserValue(): IUser | IMedicoDto | null {
     return this.currentUserSubject.value;
   }
 

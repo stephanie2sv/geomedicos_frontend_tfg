@@ -1,0 +1,40 @@
+<div class="modal show" style="display: block;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Selecciona fecha y horario</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="onCerrar()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="fecha" class="form-label">Fecha:</label>
+            <input type="date" class="form-control" id="fecha" [(ngModel)]="fechaSeleccionada">
+          </div>
+  
+          <div class="mb-3">
+            <label class="form-label">Horarios disponibles:</label>
+            <div *ngIf="horariosDisponibles.length > 0; else sinHorarios">
+              <div *ngFor="let h of horariosDisponibles">
+                <input 
+                  type="radio" 
+                  [value]="h.idHorario" 
+                  name="horario" 
+                  [(ngModel)]="horarioSeleccionadoId">
+                {{ h.fechaCita }}: {{ h.horaInicio }}
+              </div>
+            </div>
+            <ng-template #sinHorarios>
+              <p>No hay horarios disponibles.</p>
+            </ng-template>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="onCerrar()">Cancelar</button>
+          <button class="btn btn-primary" (click)="onConfirmar()" [disabled]="!horarioSeleccionadoId || !fechaSeleccionada">
+            Confirmar Cita
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+  </div>
