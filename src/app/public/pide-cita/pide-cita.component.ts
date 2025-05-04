@@ -10,7 +10,7 @@ import { HorariosMedicosService } from '../../services/horarios-medicos.service'
 import { CitasService } from '../../services/citas-service.service';
 import { MedicoCardComponent } from '../../components/medico-card/medico-card.component';
 import { IHorarioDisponible } from '../../interfaces/ihorario-disponible';
-
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -116,7 +116,13 @@ export class PideCitaComponent implements OnInit {
     this.citasService.crearCita(nuevaCita).subscribe({
       next: created => {
         console.log('Cita creada:', created);
-        this.router.navigate(['/dashboardCliente']);
+        Swal.fire({
+          icon: 'success',
+          title: 'Cita creada',
+          text: 'Tu cita se ha creado con éxito',
+          confirmButtonText: 'Aceptar'
+        });
+        this.router.navigate(['/dashboard']);
       },
       error: err => console.error('Error al crear cita:', err)
     });
