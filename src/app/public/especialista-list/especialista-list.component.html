@@ -33,10 +33,12 @@
     @if (medicoSeleccionado) {
         <app-especialista-detalle [medico]="medicoSeleccionado" (cerrar)="cerrarDetalle()" (solicitarCita)="solicitarCita($event)"></app-especialista-detalle>
     }
-    <app-selector-horario 
-    *ngIf="mostrarSelectorHorarios" 
-    [medico]="medicoParaCita" 
-    (cerrar)="cerrarSelectorHorario()" 
-    (confirmarCita)="crearCita($event)">
-</app-selector-horario>
+    @if(mostrarSelectorHorarios){
+        <app-selector-horario 
+        [medico]="medicoParaCita" 
+        (cerrar)="cerrarSelectorHorario()" 
+        (confirmarCita)="crearCita($event)">
+        </app-selector-horario>
+    }
+   
 </div>

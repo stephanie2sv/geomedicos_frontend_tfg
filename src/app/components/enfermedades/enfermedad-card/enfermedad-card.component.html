@@ -1,12 +1,17 @@
 <div class="card h-100 shadow-sm border-0">
     <div class="card-body">
       <h5 class="card-title text-primary fw-semibold">{{ enfermedad.nombre }}</h5>
-      <p *ngIf="enfermedad.descripcionTratamiento" class="text-muted">
-        {{ enfermedad.descripcionTratamiento }}
-      </p>
-      <span *ngIf="enfermedad.nombreEspecialidad" class="badge bg-info mb-2">
+      @if(enfermedad.descripcionTratamiento){
+        <p class="text-muted">
+          {{ enfermedad.descripcionTratamiento }}
+        </p>
+      }
+     @if(enfermedad.nombreEspecialidad){
+      <span class="badge bg-info mb-2">
         {{ enfermedad.nombreEspecialidad }}
       </span>
+     }
+    
       <div class="mt-2 text-end">
         <button class="btn btn-outline-primary btn-sm" (click)="onDetalle.emit(enfermedad)">
           Ver detalles

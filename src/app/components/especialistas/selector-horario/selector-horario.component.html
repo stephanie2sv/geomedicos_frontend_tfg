@@ -13,19 +13,26 @@
   
           <div class="mb-3">
             <label class="form-label">Horarios disponibles:</label>
-            <div *ngIf="horariosDisponibles.length > 0; else sinHorarios">
-              <div *ngFor="let h of horariosDisponibles">
-                <input 
-                  type="radio" 
-                  [value]="h.idHorario" 
-                  name="horario" 
-                  [(ngModel)]="horarioSeleccionadoId">
-                {{ h.fechaCita }}: {{ h.horaInicio }}
+            @if(horariosDisponibles){
+              <div>
+                @for(h of horariosDisponibles;track h){
+                  <div>
+                    <input 
+                      type="radio" 
+                      [value]="h.idHorario" 
+                      name="horario" 
+                      [(ngModel)]="horarioSeleccionadoId">
+                    {{ h.fechaCita }}: {{ h.horaInicio }}
+                  </div>
+                }
+                
               </div>
-            </div>
-            <ng-template #sinHorarios>
-              <p>No hay horarios disponibles.</p>
-            </ng-template>
+            }@else {
+              <ng-template #sinHorarios>
+                <p>No hay horarios disponibles.</p>
+              </ng-template>
+            }
+            
           </div>
         </div>
         <div class="modal-footer">
@@ -36,5 +43,4 @@
         </div>
       </div>
     </div>
-    <div class="modal-backdrop show"></div>
   </div>

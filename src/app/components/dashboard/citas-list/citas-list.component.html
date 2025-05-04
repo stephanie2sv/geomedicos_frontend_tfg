@@ -1,10 +1,11 @@
 <div>
+  @for(cita of citas; track cita.idCita){
     <app-citas
-      *ngFor="let cita of citas"
-      [cita]="cita"
-      [esMedico]="esMedico"
-      (eliminar)="onEliminar($event)">
-    </app-citas>
+    [cita]="cita"
+    [esMedico]="esMedico"
+    (eliminar)="onEliminar($event)">
+  </app-citas>
+  }  
   </div>
   
   <ng-template #noCitas>

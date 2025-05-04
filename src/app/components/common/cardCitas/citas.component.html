@@ -1,18 +1,22 @@
-<div class="container py-1">
-    <div class="card-body bg-body-secondary">
-      <h5 class="card-title mb-1 text-primary">
+
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body">
+      <h5 class="card-title text-primary fw-semibold">
         {{ esMedico ? 'Paciente:' : 'Médico:' }}
         {{ esMedico ? citaDetallada?.nombrePaciente : citaDetallada?.nombreMedico }}
       </h5>
       <div class="col-7">
-        <p *ngIf="!esMedico" class="badge bg-info mb-2">Especialidad: {{ cita.especialidad }}</p>
+        @if(!esMedico){
+          <p class="badge bg-info mb-2">Especialidad: {{ cita.especialidad }}</p>
+        }
         <span class="badge bg-success mb-2">Fecha: {{ citaDetallada?.fecha| date }}</span>
         <span class="badge bg-success mb-2">Hora: {{ citaDetallada?.horaInicio }}</span>
-    
-        <p *ngIf="!esMedico">Clínica: {{ citaDetallada?.nombreClinica }}</p>
+        @if(!esMedico){
+        <p>Clínica: {{ citaDetallada?.nombreClinica }}</p>
+        }
       </div>
      
   
       <button class="btn btn-warning btn-sm"  (click)="onEliminar()">Eliminar cita</button>
+      </div>
     </div>
-  </div>
