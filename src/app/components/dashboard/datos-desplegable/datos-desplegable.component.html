@@ -13,7 +13,24 @@
         @if(isMedico(persona)){
             <p><span class="text-body-emphasis">Especialidad: </span> {{persona.especialidades}}</p>
             <p><span class="text-body-emphasis">Tratamientos: </span> {{persona.tratamientos}}</p>
+            <div class="d-grid gap-2 mt-3">
+                <button class="btn btn-primary" (click)="abrirModalAltaHorario()">➕ Alta horario</button>
+                <button class="btn btn-outline-primary" (click)="abrirModalVerHorarios()">📅 Ver horarios</button>
+            </div>
         }
        
     </mat-card-content>
 </mat-card>
+@if (mostrarAltaHorario && isMedico(persona)) {
+  <app-modal-alta-horario 
+    [medico]="persona"
+    (cerrar)="cerrarModales()">
+  </app-modal-alta-horario>
+}
+
+@if (mostrarListadoHorarios && isMedico(persona)) {
+  <app-modal-agrupar-horario 
+    [medico]="persona"
+    (cerrar)="cerrarModales()"
+  ></app-modal-agrupar-horario>
+}

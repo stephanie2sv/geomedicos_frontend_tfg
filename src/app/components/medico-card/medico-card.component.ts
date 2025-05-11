@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ControlContainer, FormControl, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { IHorarioDisponible } from '../../interfaces/ihorario-disponible';
+import { IMedicoCard } from '../../interfaces/MedicoCard';
+import { IMedicoDto } from '../../interfaces/imedico-dto';
 
 @Component({
   selector: 'app-medico-card',
@@ -10,15 +12,15 @@ import { IHorarioDisponible } from '../../interfaces/ihorario-disponible';
   styleUrl: './medico-card.component.css'
 })
 export class MedicoCardComponent {
-@Input() turno!: IHorarioDisponible;
+@Input() medico!: IMedicoDto;
 @Input() control!: FormControl;  
 
-@Output() select = new EventEmitter<{ idMedico: number; turnoId: number }>();
+@Output() select = new EventEmitter<{ colegiado: string}>();
 
 onClick() {
   this.select.emit({
-    idMedico: this.turno.medico.usuario.idUsuario,
-    turnoId: this.turno.idHorario
+    colegiado: this.medico.colegiado,
+  
   });
 }
 }

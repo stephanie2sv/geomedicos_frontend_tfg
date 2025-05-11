@@ -1,14 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { Component, NgModule, OnInit } from "@angular/core";
+import { Component, inject, NgModule, OnInit } from "@angular/core";
 import {FullCalendarModule} from '@fullcalendar/angular'
 import { CalendarOptions,EventInput } from "@fullcalendar/core/index.js";
 import { CitasService } from "../../../services/citas-service.service";
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { MatCard , MatCardContent} from "@angular/material/card";
-import { Cita } from "../../../interfaces/cita";
-import { IHorarioDisponible } from "../../../interfaces/ihorario-disponible";
-import { HorariosMedicosService } from "../../../services/horarios-medicos.service";
 import { AuthService } from "../../../auth/services/auth.service";
+import { CitaDetallada } from "../../../interfaces/citaDetallada";
 
 
 @Component({
@@ -28,46 +26,58 @@ export class CalendarioComponent implements OnInit {
     events:[]
   }
 
+  private citasService: CitasService = inject(CitasService);
+  private authService: AuthService = inject(AuthService);
+
    constructor(
-     private citasService: CitasService,
-     private authService: AuthService,
-     private horarioMedicoService: HorariosMedicosService 
    ) {}
-   
-   horarios: IHorarioDisponible[] = [];
-   ngOnInit() {
-     this.horarioMedicoService.getTodosLosHorarios().subscribe({
-       next: horarios => {
-         this.horarios = horarios;
-         this.cargarEventos(); 
-       },
-       error: err => console.error('Error cargando horarios:', err)
-     });
-   }
-   
-   cargarEventos() {
-     const user = this.authService.getCurrentUserValue();
-   if (!user) return;
- 
-   this.citasService.getCitasPorUsuario(user.idUsuario).subscribe(
-     citas => {
-       const eventos = citas.map(cita => {
-         const horario = this.horarios.find(h => h.idHorario === cita.idHorario);
-         const hora = horario?.horaInicio || '10:00:00'; 
- 
-         return {
-           title: user.role === 'PACIENTE'
-             ? `Cita médica`
-             : `Cita con ${cita.nombrePaciente || 'Paciente'}`,
-           start: `${cita.fecha}T${hora}`,
-           allDay: false
-         };
-       });
-       
-       this.calendarOptions = { ...this.calendarOptions, events: eventos };
-     },
-     error => console.error('Error al cargar citas:', error)
-   );
+
+   ngOnInit(): void {
+    const user = this.authService.getCurrentUserValue();
+
+    if (!user) {
+      console.error('Usuario no autenticado');
+      return;
+    }
+
+    // Paciente
+    if (user.role === 'PACIENTE') {
+      this.citasService.getCitasPorUsuario(user.idUsuario).subscribe({
+        next: (citas) => {
+          console.log("citas: ",citas)
+          this.calendarOptions.events = this.mapCitasToEvents(citas);
+        },
+        error: (err) => console.error('Error cargando citas del paciente', err)
+      });
+    }
+
+    // Médico
+    if (user.role === 'DOCTOR'&& 'colegiado' in user) {
+      const fechaInicio = '2025-01-01';
+      this.citasService.getCitasMedico(user.colegiado).subscribe({
+        next: (citas) => {
+          this.calendarOptions.events = this.mapCitasToEvents(citas);
+        },
+        error: (err) => console.error('Error cargando citas del médico', err)
+      });
+    }
   }
 
+  private mapCitasToEvents(citas: CitaDetallada[]): any[] {
+    const user = this.authService.getCurrentUserValue();
+    if (!user) return [];
+
+    return citas.map(cita => ({
+      id: cita.idCita,
+      title: user.role === 'DOCTOR'
+        ? `Paciente: ${cita.nombrePaciente}`
+        : `Médico: ${cita.nombreMedico}`,
+      start: `${cita.fecha}T${cita.horaInicio}`,
+      
+    }));
+  }
 }
+
+   
+
+

@@ -1,0 +1,55 @@
+<div class="modal show" style="display: block;" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Registrar nueva clínica</h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+
+      <form [formGroup]="clinicaForm" (ngSubmit)="onSubmit()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" formControlName="nombre" class="form-control" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Dirección</label>
+            <input type="text" formControlName="direccion" class="form-control" />
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Ciudad</label>
+              <input type="text" formControlName="ciudad" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Código Postal</label>
+              <input type="text" formControlName="codigoPostal" class="form-control" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Especialidades</label>
+            <select multiple class="form-select" formControlName="especialidades">
+              <option *ngFor="let esp of especialidades" [value]="esp.idEspecialidad">
+                {{ esp.nombre }}
+              </option>
+            </select>
+            <div class="form-text">Mantén Ctrl (Windows) o Cmd (Mac) para seleccionar varias.</div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn btn-success" [disabled]="clinicaForm.invalid">
+            Guardar clínica
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

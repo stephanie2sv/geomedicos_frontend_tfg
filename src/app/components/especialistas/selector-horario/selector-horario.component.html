@@ -5,10 +5,11 @@
           <h5 class="modal-title">Selecciona fecha y horario</h5>
           <button type="button" class="btn-close" aria-label="Close" (click)="onCerrar()"></button>
         </div>
+
         <div class="modal-body">
           <div class="mb-3">
             <label for="fecha" class="form-label">Fecha:</label>
-            <input type="date" class="form-control" id="fecha" [(ngModel)]="fechaSeleccionada">
+            <input type="date" class="form-control" id="fecha" [(ngModel)]="fechaSeleccionada" (change)="cargarHorarios()">
           </div>
   
           <div class="mb-3">
@@ -35,6 +36,7 @@
             
           </div>
         </div>
+        
         <div class="modal-footer">
           <button class="btn btn-secondary" (click)="onCerrar()">Cancelar</button>
           <button class="btn btn-primary" (click)="onConfirmar()" [disabled]="!horarioSeleccionadoId || !fechaSeleccionada">

@@ -22,7 +22,7 @@
         <button class="btn btn-outline-primary btn-sm" (click)="verDetalle.emit(medico)">
             Ver perfil
         </button>
-        <button class="btn btn-warning btn-sm" (click)="solicitarCita.emit(medico)">
+        <button class="btn btn-warning btn-sm" (click)="solicitarCita.emit(medico)" [disabled]="!estaLogueado">
             Solicitar cita
         </button>
     </div>

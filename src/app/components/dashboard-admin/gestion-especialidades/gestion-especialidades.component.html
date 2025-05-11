@@ -1,0 +1,10 @@
+<div class="card shadow-sm p-4">
+  <h4 class="mb-4">Gestión de Especialidades</h4>
+
+  <app-especialidad-alta (especialidadCreada)="crearEspecialidad($event)"></app-especialidad-alta>
+
+  <app-especialidad-list-admin
+    [especialidades]="especialidades"
+    (eliminar)="eliminarEspecialidad($event)">
+  </app-especialidad-list-admin>
+</div>

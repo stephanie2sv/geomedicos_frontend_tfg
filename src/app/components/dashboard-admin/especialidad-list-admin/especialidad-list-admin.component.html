@@ -1,0 +1,24 @@
+<table class="table table-hover">
+  <thead class="table-light">
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(esp of especialidades;track esp.idEspecialidad){
+         <tr>
+      <td>{{ esp.idEspecialidad }}</td>
+      <td>{{ esp.nombre }}</td>
+      <td>
+        <button class="btn btn-danger btn-sm" (click)="eliminarEspecialidad(esp.idEspecialidad)">
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </td>
+    </tr>
+    }
+   
+  </tbody>
+</table>
+

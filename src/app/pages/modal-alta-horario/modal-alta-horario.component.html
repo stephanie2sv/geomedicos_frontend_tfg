@@ -1,0 +1,68 @@
+<div class="modal show d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Alta de Horario</h5>
+        <button type="button" class="btn-close" aria-label="Cerrar" (click)="onCancelar()"></button>
+      </div>
+      <form (ngSubmit)="onGuardar()" #form="ngForm">
+        <div class="modal-body">
+          
+          <!-- Fecha -->
+          <div class="mb-3">
+            <label for="fecha" class="form-label">Fecha de Cita</label>
+            <input
+              type="date"
+              class="form-control"
+              id="fecha"
+              required
+              [(ngModel)]="horario.fechaCita"
+              name="fechaCita"
+            />
+          </div>
+
+          <!-- Hora -->
+          <div class="mb-3">
+            <label for="hora" class="form-label">Hora de Inicio</label>
+            <input
+              type="time"
+              class="form-control"
+              id="hora"
+              required
+              [(ngModel)]="horario.horaInicio"
+              name="horaInicio"
+            />
+          </div>
+
+          <!-- Clínica -->
+          <div class="mb-3">
+            <label for="clinica" class="form-label">Clínica</label>
+            <select
+              class="form-select"
+              id="clinica"
+              required
+              [(ngModel)]="horario.idClinica"
+              name="idClinica"
+            >
+              <option value="" disabled selected>Seleccione una clínica</option>
+              @for(clinica of clinicas; track clinica.idClinica){
+                <option [value]="clinica.idClinica">
+                {{ clinica.nombre }}
+              </option>
+              }
+              
+            </select>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="onCancelar()">Cancelar</button>
+          <button type="submit" class="btn btn-success" [disabled]="form.invalid">
+            Guardar Horario
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

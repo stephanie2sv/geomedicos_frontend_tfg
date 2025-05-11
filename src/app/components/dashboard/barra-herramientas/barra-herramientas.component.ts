@@ -10,10 +10,10 @@ import { RouterModule } from '@angular/router';
 })
 export class BarraHerramientasComponent {
 
-  @Output() componenteSeleccionado= new EventEmitter<string>();
+  @Output() componenteSeleccionado= new EventEmitter<'calendario' | 'agenda' | 'citas'>();
   @Output() mostrarDatos=new EventEmitter<string>();
 
-  seleccionarComponente(componente:string){
+  seleccionarComponente(componente:'calendario' | 'agenda' | 'citas'){
     this.componenteSeleccionado.emit(componente);
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, inject, OnInit, Output } from '@angular/core';
 import { IEspecialidad } from '../../interfaces/iespecialidad';
 import { EspecialidadesService } from '../../services/especialidades.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -16,8 +16,8 @@ import { IMedicoCard } from '../../interfaces/MedicoCard';
 import { SelectorHorarioComponent } from "../../components/especialistas/selector-horario/selector-horario.component";
 import { AuthService } from '../../auth/services/auth.service';
 import { Cita } from '../../interfaces/cita';
-import { throwError } from 'rxjs';
 import { CitasService } from '../../services/citas-service.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-especialista-list',
@@ -58,19 +58,21 @@ export class EspecialistaListComponent implements OnInit {
 
 mostrarSelectorHorarios = false;
 medicoParaCita!: IMedicoCard;
+    private mService: MedicosService = inject(MedicosService);
+    private espeService: EspecialidadesService= inject(EspecialidadesService);
+    private authService: AuthService= inject(AuthService);
+    private citasService:CitasService= inject(CitasService);
+    private route: ActivatedRoute= inject(ActivatedRoute);
+    private router: Router= inject(Router);
 
   constructor(
-    private mService: MedicosService,
-    private espeService: EspecialidadesService,
-    private authService: AuthService,
-    private citasService:CitasService,
-    private route: ActivatedRoute,
-    private router: Router
+
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.idEspecialidad = +params['id'] || 0;
+      console.log("Recibido idEspecialidad:", this.idEspecialidad);
       this.cargarDatos();
       
     });
@@ -83,6 +85,10 @@ medicoParaCita!: IMedicoCard;
       this.espeService.getEspecialidadPorId(this.idEspecialidad).subscribe({
         next: (data) => {
           this.especialidad = data;
+          console.log(`➡️ Filtro por especialidad: ${data.nombre}`);
+          this.terminoBusqueda = normalizarTexto(data.nombre);
+          console.log('Filtro aplicado automáticamente con nombre de especialidad: ', this.terminoBusqueda);
+          
         },
         error: () => {
           this.error = 'No se pudo cargar la información de la especialidad';
@@ -92,8 +98,9 @@ medicoParaCita!: IMedicoCard;
       this.mService.getMedicosPorEspecialidad(this.idEspecialidad).subscribe({
         next: (data) => {
           this.medicos = data;
+          console.log('✅ Médicos recibidos desde API:', this.medicos);
           this.medicosFiltrados = [...data];
-          this.aplicarFiltros();
+
           this.actualizarPaginacion();
           this.cargando = false;
         },
@@ -167,7 +174,7 @@ medicoParaCita!: IMedicoCard;
           medico.especialidades.some((especialidad: any) =>
             typeof especialidad === 'string'
               ? normalizarTexto(especialidad).includes(termino)
-              : normalizarTexto(especialidad.nombre || '').includes(termino)
+              : normalizarTexto(especialidad.nombre || '')?.includes(termino)
           ))
       );
     } else {
@@ -181,6 +188,10 @@ medicoParaCita!: IMedicoCard;
   }
 
   actualizarTermino(nuevoTermino: string): void {
+      if (this.idEspecialidad > 0) {
+    console.log('⛔ Ignorando filtro manual porque hay idEspecialidad:', this.idEspecialidad);
+    return;
+  }
     this.terminoBusqueda = nuevoTermino || '';
     this.buscarMedicos();
   }
@@ -278,7 +289,14 @@ cambiarPagina(pagina: number): void{
       this.citasService.crearCita(nuevaCita).subscribe({
         next: () => {
           this.mostrarSelectorHorarios = false;
-          this.router.navigate(['/dashboardCliente']);
+           Swal.fire({
+        icon: 'success',
+        title: 'Cita confirmada',
+        text: 'Tu cita ha sido programada correctamente.',
+        confirmButtonText: 'Ir al dashboard'
+        }).then(() => {
+        this.router.navigate(['/dashboard']);
+          });
         },
         error: err => console.error('Error al crear cita:', err)
       });

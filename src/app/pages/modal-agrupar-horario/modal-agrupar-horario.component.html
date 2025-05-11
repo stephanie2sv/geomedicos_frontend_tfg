@@ -1,0 +1,42 @@
+<div class="modal show" style="display: block;">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">📅 Horarios Programados</h5>
+        <button class="btn-close" (click)="cerrar.emit()"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="mb-3">
+          <label for="fechaInicio" class="form-label">Ver horarios desde:</label>
+          <input type="date" id="fechaInicio" class="form-control"
+                 [(ngModel)]="fechaInicioStr" (change)="recargarHorarios()" />
+        </div>
+        @if(horariosAgrupados && getFechasAgrupadas()){
+        <div>
+            @for(fecha of fechasOrdenadas; track fecha){
+            <div>
+                <h6 class="mt-3">{{ fecha }}</h6>
+            <ul>
+                @for(horario of horariosAgrupados[fecha]; track horario){
+                <li>
+                    {{ horario.horaInicio }} - {{ getNombreClinica(horario.idClinica) }}
+                </li>
+                }
+             
+            </ul>
+          </div>
+            }
+         
+        </div>
+        }
+
+
+        <ng-template #sinHorarios>
+          <p class="text-muted">No hay horarios programados desde esta fecha.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+

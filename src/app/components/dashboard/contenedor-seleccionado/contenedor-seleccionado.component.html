@@ -6,7 +6,7 @@
         <div class="row">
             <div class="row row-cols-sm-3 g-2">
                 @for (cita of citas; track cita.idCita) {        
-                    <app-citas [cita]="cita" [esMedico]="esMedico" (eliminar)="onEliminar($event)"></app-citas>
+                    <app-citas [cita]="cita" [esMedico]="persona?.role === 'DOCTOR'" (eliminar)="onEliminar($event)"></app-citas>
                 }
             </div>
         </div>

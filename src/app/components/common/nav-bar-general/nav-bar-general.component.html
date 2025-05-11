@@ -25,9 +25,12 @@
           <button class="btn btn-outline-primary me-2 navbar-btn" (click)="irAreaPersonal()">Área Personal</button>
         </li>
       
-        <li class="nav-item">
+        @if(userRole!='DOCTOR'){
+          <li class="nav-item">
           <a class="btn btn-outline-dark me-2 navbar-btn" routerLink="/pide-cita">Pide cita</a>
         </li>
+        }
+        
       
         @if (!(authService.currentUser$ | async)) {
           <li class="nav-item">

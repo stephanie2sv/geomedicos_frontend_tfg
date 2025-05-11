@@ -10,14 +10,14 @@
     } @else if (clinicasFiltradas.length === 0) {
       <div class="alert alert-info">No se encontraron clínicas que coincidan con su búsqueda.</div>
     } @else {
-      <!-- <app-clinica-listado [clinicas]="clinicasPaginadas"></app-clinica-listado>
-      <app-clinica-paginacion
+      <app-clinicas-listado [clinicas]="clinicasPaginadas"></app-clinicas-listado>
+      <app-clinicas-paginacion
         [paginaActual]="paginaActual"
         [totalPaginas]="totalPaginas"
         (onPaginaChange)="cambiarPagina($event)">
-      </app-clinica-paginacion> -->
-      <app-clinicas-listado [clinicas]="clinicasPaginadas"></app-clinicas-listado>
-      <app-clinicas-paginacion></app-clinicas-paginacion>
+      </app-clinicas-paginacion>
+      
+     
     }
   </div>
   

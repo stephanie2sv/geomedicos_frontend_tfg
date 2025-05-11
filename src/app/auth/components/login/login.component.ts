@@ -33,11 +33,13 @@ export class LoginComponent {
 
     this.authService.login({ correo, password }).subscribe({
       next: user => {
-        if (['PACIENTE', 'DOCTOR', 'ADMON'].includes(user.role)) {
-          this.router.navigate(['/dashboard']);
-        } else {
-          this.router.navigate(['/home']);
-        }
+            if (user.role === 'ADMON') {
+        this.router.navigate(['/dashboard-admin']);
+      } else if (user.role === 'PACIENTE' || user.role === 'DOCTOR') {
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.router.navigate(['/home']);
+      }
       },
       error: err => {
         this.errorMsg = 'Correo o contraseña incorrectos.';

@@ -14,6 +14,7 @@ import { RegisterComponent } from './auth/components/register/register.component
 import { DashboardComponent } from './pages/dashboard/contenedor-dashboard/contenedor-dashboard.component';
 import { ClinicasListComponent } from './public/clinicas-list/clinicas-list.component';
 import { PideCitaComponent } from './public/pide-cita/pide-cita.component';
+import { DashboardAdminComponent } from './pages/dashboard-admin/dashboard-admin.component';
 
 
 
@@ -26,15 +27,14 @@ export const routes: Routes = [
   { path: 'enfermedades', component: EnfermedadesListComponent },
   { path: 'especialidades', component: EspecialistaListComponent },
   { path: 'especialidades/:id', component: EspecialistaListComponent },
+  {path: 'medico/especialidad/:id',component: EspecialistaListComponent},
   { path: 'clinicas', component: ClinicasListComponent },
   { path: 'pide-cita', component: PideCitaComponent, canActivate: [authGuard, RoleGuard],
-     data: { roles: ['PACIENTE', 'DOCTOR', 'ADMON'] } },
-  {path: 'dashboard', component: DashboardComponent, canActivate: [RoleGuard], data: { roles: ['PACIENTE', 'ADMON', 'DOCTOR'] } },
+     data: { roles: ['PACIENTE', 'ADMON'] } },
+  {path: 'dashboard', component: DashboardComponent, canActivate: [RoleGuard], data: { roles: ['PACIENTE', 'DOCTOR'] } },
+{path: 'dashboard-admin', component: DashboardAdminComponent, canActivate: [RoleGuard], data: { roles: ['ADMON'] } },
 
 
-  
-  // Ruta para acceso denegado
-//   { path: 'unauthorized', component: UnauthorizedComponent },
 
   // Rutas por defecto
   { path: '', redirectTo: 'home', pathMatch: 'full' },

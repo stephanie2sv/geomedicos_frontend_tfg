@@ -15,6 +15,9 @@ export interface IMedicoDto {
     colegiado: string;
     tarifa: number;
     imagen: string;
+    especialidad: IEspecialidad;
     especialidades: IEspecialidad[];
     tratamientos: Itratamiento[];
   }
+
+  

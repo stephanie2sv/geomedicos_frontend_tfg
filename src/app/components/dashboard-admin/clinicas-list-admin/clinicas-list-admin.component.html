@@ -1,0 +1,60 @@
+<app-clinicas-filtros
+  [termino]="terminoBusqueda"
+  (onBuscar)="aplicarFiltro($event)">
+</app-clinicas-filtros>
+
+<div class="card shadow-sm p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Listado de Clínicas</h4>
+    <button class="btn btn-success" (click)="abrirModalAlta()">
+      <i class="fas fa-plus"></i> Nueva Clínica
+    </button>
+  </div>
+
+  <table class="table table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>Nombre</th>
+        <th>Dirección</th>
+        <th>Ciudad</th>
+        <th>Código Postal</th>
+        <th>Especialidades</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (clinica of clinicasFiltradas; track clinica.idClinica) {
+        <tr>
+          <td>{{ clinica.nombre }}</td>
+          <td>{{ clinica.direccion }}</td>
+          <td>{{ clinica.ciudad }}</td>
+          <td>{{ clinica.codigoPostal }}</td>
+          <td>
+            @if (clinica.especialidades) {
+              <ul class="mb-0">
+                @for (esp of clinica.especialidades; track esp.idEspecialidad) {
+                  <li>{{ esp.nombre }}</li>
+                }
+              </ul>
+            } @else {
+              <em class="text-muted">Sin especialidades</em>
+            }
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm" (click)="eliminarClinica(clinica.idClinica)">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+@if(mostrarAltaClinica){
+  <app-alta-clinicas
+    (cerrar)="cerrarModalAlta()"
+    (clinicaCreada)="recargarClinicas()">
+  </app-alta-clinicas>
+}
+
+</div>
+

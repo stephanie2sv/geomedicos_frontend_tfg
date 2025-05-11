@@ -14,28 +14,42 @@
     </div>
 
     <div class="mb-3">
-      <label for="fecha" class="form-label">Fecha y hora</label>
+      <label for="fecha" class="form-label">Fecha deseada</label>
       <input type="date" id="fecha" formControlName="fecha" class="form-control" [min]="minFecha" (change)="buscarMedicosDisponibles()" />
     </div>
 
-    @if(medicosFiltrados){
+    @if(medicos){
       <div  class="mb-3">
         <h5>Seleccione un médico disponible:</h5>
         
-        @for(turno of medicosFiltrados; track turno.idHorario){
-          <app-medico-card
-          [turno]="turno"
-          [control]="idHorarioControl"
-          (select)="onTurnoSeleccionado($event)"> 
-        </app-medico-card>
+        @for(medico of medicos; track medico.colegiado){
+          @if(medico&& medico.nombre){
+            <app-medico-card
+              [medico]="medico"
+              [control]="colegiadoControl"
+              (select)="onTurnoSeleccionado($event)"> 
+            </app-medico-card>
+  }
         }
       </div>
+    }@else if (citaForm.get('especialidad')?.value && citaForm.get('fecha')?.value) {
+      <div class="alert alert-warning">No hay médicos disponibles para esa especialidad y fecha.</div>
     }
 
-    @if(!medicosFiltrados && citaForm.get('especialidad')?.value && citaForm.get('fecha')?.value){
-      <div  class="alert alert-warning">
-        No hay médicos disponibles para la especialidad y fecha seleccionadas.
+    @if(horariosDispobibles){
+       <div class="mb-3">
+        <label for="idHorario" class="form-label">Horario disponible</label>
+        <select id="idHorario" formControlName="idHorario" class="form-select">
+          <option value="" disabled selected>— Selecciona —</option>
+          @for (horario of horariosDispobibles; track horario.idHorario) {
+            <option [value]="horario.idHorario">
+              {{ horario.fechaCita }} — {{ horario.horaInicio }}
+            </option>
+          }
+        </select>
       </div>
+    } @else if (citaForm.get('medico')?.value) {
+      <div class="alert alert-warning">Este médico no tiene horarios disponibles para esa fecha.</div>
     }
     
 

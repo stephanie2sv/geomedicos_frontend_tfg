@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, output, Output } from '@angular/core';
 import { AuthService } from '../../../auth/services/auth.service';
 import { BarraHerramientasComponent } from "../../../components/dashboard/barra-herramientas/barra-herramientas.component";
 import { CommonModule } from '@angular/common';
 import { DatosDesplegableComponent } from '../../../components/dashboard/datos-desplegable/datos-desplegable.component';
 import { ContenedorSeleccionadoComponent } from '../../../components/dashboard/contenedor-seleccionado/contenedor-seleccionado.component';
 import { IUser } from '../../../auth/interfaces/iuser';
-import { IMedicoCard } from '../../../interfaces/MedicoCard';
 import { IMedicoDto } from '../../../interfaces/imedico-dto';
 
 @Component({
@@ -16,9 +15,9 @@ import { IMedicoDto } from '../../../interfaces/imedico-dto';
   imports: [BarraHerramientasComponent, DatosDesplegableComponent, ContenedorSeleccionadoComponent, CommonModule]
 })
 export class DashboardComponent implements OnInit {
-  role: string | null = null;
-  persona: IUser | IMedicoDto | null = null;
-  componenteActual: string = 'area-personal';
+ role: string | null = null;
+ persona: IUser | IMedicoDto | null = null;
+ componenteActual: 'calendario' | 'agenda' | 'citas' = 'calendario';
   mostrarDatos = true;
 
   constructor(private authService: AuthService) {}
@@ -29,7 +28,7 @@ export class DashboardComponent implements OnInit {
       console.log('Usuario cargado en Dashboard:', this.persona);
     });
   }
-  actualizarComponente(nombre: string) {
+  actualizarComponente(nombre: 'calendario' | 'agenda' | 'citas') {
     this.componenteActual = nombre;
   }
 

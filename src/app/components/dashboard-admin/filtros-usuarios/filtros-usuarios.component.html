@@ -1,0 +1,17 @@
+<div class="row mb-3 align-items-end">
+    <div class="col-md-6">
+        <form (ngSubmit)="emitirBusqueda()" class="d-flex gap-2">
+            <input type="email" class="form-control" placeholder="Buscar por correo" [(ngModel)]="correo" name="correoBusqueda" required  (ngModelChange)="emitirBusqueda()"/>
+            <button class="btn btn-primary" type="submit">Buscar</button>
+        </form> 
+    </div>
+    <div class="col-md-4">
+        <select class="form-select" [(ngModel)]="rolSeleccionado" (change)="emitirBusqueda()" name="rolFiltro">
+          <option value="">Todos los roles</option>
+          <option value="PACIENTE">Paciente</option>
+          <option value="DOCTOR">Doctor</option>
+          <option value="ADMON">Administrador</option>
+        </select>
+  </div>
+</div>
+

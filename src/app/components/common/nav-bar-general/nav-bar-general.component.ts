@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -12,13 +12,20 @@ import { AuthService } from '../../../auth/services/auth.service';
 })
 export class NavBarGeneralComponent {
   isMenuCollapsed = true;
-  
+  userRole: string | null = null;
+
+  public authService: AuthService = inject(AuthService);
+  private router: Router = inject(Router); 
+
   constructor(
-    public authService: AuthService,
-    private router: Router 
+
   ) {}
 
-  
+  ngOnInit() {
+  this.authService.currentUser$.subscribe(user => {
+    this.userRole = user?.role ?? null;
+  });
+}
   irAreaPersonal(): void {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/dashboard']);

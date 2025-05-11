@@ -19,6 +19,17 @@ export class EspecialidadesService {
   getEspecialidadPorId(id: number): Observable<IEspecialidad> {
     return this.http.get<IEspecialidad>(`${this.apiUrl}/${id}`);
   }
+
+  getEspecialidadesPorNombre(nombre: string): Observable<IEspecialidad[]> {
+    return this.http.get<IEspecialidad[]>(`${this.apiUrl}/nombre/${nombre}`);
+  }
+  
+  crearEspecialidad(nombre: string): Observable<any> {
+    return this.http.post(this.apiUrl + '/alta', { nombre }, { responseType: 'text' });
+  }
  
+  eliminarEspecialidad(idEspecialidad: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${idEspecialidad}`, { responseType: 'text' });
+  }
 
 }

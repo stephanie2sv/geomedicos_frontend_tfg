@@ -21,7 +21,7 @@
         
     }
 
-    @if(medicosPaginados.length>elementosPorPagina){
+    @if(totalPaginas>1){
         <app-especialista-paginacion
         [pagina]="paginaActual"
         [totalPaginas]="totalPaginas"

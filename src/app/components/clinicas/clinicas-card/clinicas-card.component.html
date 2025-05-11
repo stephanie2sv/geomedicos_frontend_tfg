@@ -1,1 +1,16 @@
-<p>clinicas-card works!</p>
+<div class="card clicable col-lg-10 col-md-6 mb-4 d-flex" (click)="abrirDetalle()" >
+    <div class="card h-100 shadow-sm border-0 w-100">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title text-primary fw-semibold">{{ clinica.nombre }}</h5>
+        <p class="badge bg-info mb-2">{{ clinica.direccion }}</p>
+        <p class="text-muted small">Ciudad: {{ clinica.ciudad }}</p>
+        <p class="card-text"><strong>Especialidades:</strong> 
+            {{ getNombresEspecialidades(clinica) }}
+          </p>
+      </div>
+    </div>
+</div>
+
+
+
+

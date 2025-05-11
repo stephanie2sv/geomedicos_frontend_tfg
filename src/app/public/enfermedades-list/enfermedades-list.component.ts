@@ -212,7 +212,7 @@ buscarDoctoresPorEnfermedad(enfermedad: IEnfermedad): void {
 
   if (idEspecialidad) {
     // Redirigir a la ruta de especialistas con ID
-    this.router.navigate(['/especialidades', idEspecialidad]);
+    this.router.navigate(['/medico/especialidad', idEspecialidad]);
   } else {
     console.warn('No se pudo obtener la especialidad de la enfermedad');
   }

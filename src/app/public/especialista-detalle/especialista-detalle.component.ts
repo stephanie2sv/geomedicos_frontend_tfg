@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IMedicoCard } from '../../interfaces/MedicoCard';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
   selector: 'app-especialista-detalle',
@@ -13,13 +14,24 @@ export class EspecialistaDetalleComponent {
   @Input() medico!: IMedicoCard;
   @Output() cerrar = new EventEmitter<void>();
   @Output() solicitarCita = new EventEmitter<IMedicoCard>();
+  
+  estaLogueado = false;
+
+ private authService: AuthService= inject(AuthService);
+
+  ngOnInit(): void {
+    this.estaLogueado = this.authService.isAuthenticated() 
+  }
+
 
   onCerrar() {
     this.cerrar.emit();
   }
 
   onSolicitarCita() {
-    this.solicitarCita.emit(this.medico);
+    if (this.estaLogueado) {
+      this.solicitarCita.emit(this.medico);
+    }
   }
 
 

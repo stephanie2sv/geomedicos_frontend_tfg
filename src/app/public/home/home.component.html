@@ -29,11 +29,11 @@
                 <i class="fas fa-map-marker-alt text-primary fs-5"></i>
               </span>
               <select class="form-select form-select-lg border-0 ps-0"
-                      [(ngModel)]="provinciaSeleccionada">
-                <option value="">Selecciona provincia</option>
-                <option>Madrid</option>
-                <option>Barcelona</option>
-                <!-- Puedes añadir más provincias -->
+               [(ngModel)]="provinciaSeleccionada">
+                 <option value="">Selecciona provincia</option>
+                <option *ngFor="let provincia of provincias" [value]="provincia">
+                  {{ provincia }}
+                </option>
               </select>
             </div>
           </div>
@@ -61,4 +61,45 @@
 
     </div>
   </div>
+  @if(clinicasFiltradas){
+    <div class="mt-4">
+      <h3 class="mb-3">Resultados:</h3>
+      <div class="row">
+      @for(clinica of clinicasFiltradas; track clinica.idClinica){
+        <div class="col-lg-4 mb-2">
+        <app-clinicas-card [clinica]="clinica" (verDetalle)="verDetalleClinica($event)"></app-clinicas-card>
+        </div>
+      }
+      </div>
+      
+    </div>
+  }
+
+  @if (clinicaSeleccionada) {
+  <div class="modal show" style="display: block; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ clinicaSeleccionada.nombre }}</h5>
+          <button class="btn-close" (click)="cerrarModalClinica()"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Dirección:</strong> {{ clinicaSeleccionada.direccion }}</p>
+          <p><strong>Especialidades:</strong></p>
+          <div class="d-flex flex-wrap gap-2">
+            @for (esp of clinicaSeleccionada.especialidades || []; track esp.idEspecialidad) {
+              <button class="btn btn-outline-primary" (click)="irAEspecialidad(esp.idEspecialidad)">
+                {{ esp.nombre }}
+              </button>
+            }
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cerrarModalClinica()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+ 
 </div>
